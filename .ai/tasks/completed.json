@@ -548,10 +548,48 @@
         "apps/api/src/modules/packages/application/index.ts"
       ],
       "commitReferences": []
+    },
+    {
+      "id": "SPL-209",
+      "issueType": "task",
+      "epicId": "SPL-E03",
+      "parentId": null,
+      "summary": "Package Storage API",
+      "description": "Implement POST /api/v1/packages endpoint for storing packages.",
+      "rationale": "API endpoint for delivery agents to store packages in lockers.",
+      "acceptanceCriteria": [
+        "POST /api/v1/packages endpoint implemented",
+        "Request body: reference, size (SMALL, MEDIUM, LARGE)",
+        "Response includes: packageId, lockerCode, pickupCode (plaintext, once only)",
+        "Error handling: no suitable locker available, invalid size",
+        "409 Conflict for duplicate package reference"
+      ],
+      "labels": ["api", "presentation", "sprint-3"],
+      "components": ["backend"],
+      "priority": "high",
+      "storyPoints": 2,
+      "dependencies": ["SPL-208"],
+      "status": "DONE",
+      "assignee": null,
+      "createdAt": "2025-06-13T00:21:00+08:00",
+      "updatedAt": "2025-06-13T00:39:00+08:00",
+      "startedAt": "2025-06-13T00:36:00+08:00",
+      "completedAt": "2025-06-13T00:39:00+08:00",
+      "implementationNotes": "Created Zod schemas for request/response validation (packageSchemas.ts). Implemented POST /api/v1/packages endpoint (packageRoutes.ts) with StorePackageUseCase integration. Created PostgreSQL repository implementations (PackageRepositoryPostgres, StorageAssignmentRepositoryPostgres). Wired up routes in server.ts. Error mapping: 400 validation, 409 duplicate, 422 no locker, 500 storage failure.",
+      "testEvidence": "API endpoint accepts reference and size, returns packageId/lockerCode/pickupCode on success. Comprehensive error handling with appropriate HTTP status codes. Schemas validated with Zod.",
+      "relatedFiles": [
+        "apps/api/src/modules/packages/presentation/schemas/packageSchemas.ts",
+        "apps/api/src/modules/packages/presentation/routes/packageRoutes.ts",
+        "apps/api/src/modules/packages/infrastructure/repositories/PackageRepositoryPostgres.ts",
+        "apps/api/src/modules/packages/infrastructure/repositories/StorageAssignmentRepositoryPostgres.ts",
+        "apps/api/src/modules/packages/infrastructure/index.ts",
+        "apps/api/src/server.ts"
+      ],
+      "commitReferences": []
     }
   ],
   "metadata": {
-    "totalCompleted": 14,
-    "lastUpdated": "2025-06-13T00:36:00+08:00"
+    "totalCompleted": 15,
+    "lastUpdated": "2025-06-13T00:39:00+08:00"
   }
 }

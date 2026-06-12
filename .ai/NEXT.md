@@ -3,10 +3,10 @@
 ## Current State
 
 - **Sprint**: Sprint 3 — Package Storage 🚀 IN_PROGRESS
-- **Active Task**: SPL-209 — Package Storage API
-- **Status**: IN_PROGRESS (on feat/SPL-209 branch)
-- **Repository State**: Sprint 2 complete, SPL-208 committed
-- **Passing Checks**: All Sprint 3 tasks committed
+- **Active Task**: SPL-210 — Package Storage UI
+- **Status**: IN_PROGRESS (on feat/SPL-210 branch)
+- **Repository State**: Sprint 2 complete, SPL-209 committed
+- **Passing Checks**: All Sprint 3 backend tasks complete
 - **Blockers**: None
 
 ## Sprint 3 Progress
@@ -16,62 +16,57 @@
 | SPL-206 | 3 | ✅ DONE — Package Domain Model |
 | SPL-207 | 2 | ✅ DONE — Pickup Code Generation & Hashing |
 | SPL-208 | 3 | ✅ DONE — Store Package Use Case |
-| **SPL-209** | 2 | 🔄 IN_PROGRESS — Package Storage API |
-| SPL-210 | 3 | ⏳ BACKLOG — Package Storage UI |
+| SPL-209 | 2 | ✅ DONE — Package Storage API |
+| **SPL-210** | 3 | 🔄 IN_PROGRESS — Package Storage UI |
 
-**Completed:** 8/13 points (62%) | **Sprint 3 Total:** 13 points
+**Completed:** 10/13 points (77%) | **Sprint 3 Total:** 13 points
 
-## Just Completed — SPL-208
+## Just Completed — SPL-209
 
-**Store Package Use Case** committed to `feat/SPL-208`:
+**Package Storage API** committed to `feat/SPL-209`:
 
-- PackageRepository and StorageAssignmentRepository ports
-- StorePackageUseCase with allocation policy
-- Idempotent duplicate handling
-- Race condition protection (double-check locker availability)
-- 12 comprehensive unit tests
+- POST /api/v1/packages endpoint with Zod validation
+- Request/response schemas with proper types
+- PackageRepositoryPostgres implementation
+- StorageAssignmentRepositoryPostgres implementation
+- Error handling: 400, 409, 422, 500 status codes
+- Wired up in server.ts
 
-## Next Action — SPL-209
+## Next Action — SPL-210
 
-**Package Storage API** — REST endpoint for storing packages:
+**Package Storage UI** — React form for delivery agents:
 
-1. **Endpoint**: `POST /api/v1/packages`
+1. **Route**: `/packages/store` or modal component
 
-2. **Request Body**:
-   ```json
-   {
-     "reference": "PKG-001",
-     "size": "SMALL"
-   }
-   ```
+2. **Form Fields**:
+   - Package Reference (text input)
+   - Size Selection (radio buttons: SMALL, MEDIUM, LARGE)
+   - Submit button with loading state
 
-3. **Success Response (201)**:
-   ```json
-   {
-     "packageId": "uuid",
-     "lockerCode": "L-S-001",
-     "pickupCode": "123456",
-     "message": "Package stored successfully. Save your pickup code - it will not be shown again."
-   }
-   ```
+3. **Success View**:
+   - Locker Code (prominent display)
+   - Pickup Code (prominent display with warning)
+   - Warning message: "Save your pickup code - it will not be shown again"
 
-4. **Error Responses**:
-   - `400` - Invalid request body (validation error)
-   - `409` - Duplicate reference (already exists)
-   - `422` - No suitable locker available
-   - `500` - Storage operation failed
+4. **Error Handling**:
+   - Validation errors (inline)
+   - 409 Conflict (duplicate reference)
+   - 422 No suitable locker
+   - 500 Server error
 
 5. **Files to Create**:
-   - `apps/api/src/modules/packages/presentation/schemas/packageSchemas.ts`
-   - `apps/api/src/modules/packages/presentation/routes/packageRoutes.ts`
-   - Wire up routes in server.ts
+   - `apps/web/src/api/packageApi.ts` — API client
+   - `apps/web/src/components/packages/StorePackageForm.tsx` — Form component
+   - `apps/web/src/components/packages/StorePackageSuccess.tsx` — Success view
+   - `apps/web/src/routes/packages/StorePackagePage.tsx` — Page component
 
 ## Resume Protocol
 
 When the user says "continue":
 1. Read this file (`.ai/NEXT.md`).
 2. Read active task from `.ai/tasks/active.json`.
-3. Implement Zod schemas for package API.
-4. Create POST /api/v1/packages route handler.
-5. Wire up routes in server.ts.
-6. Update governance records.
+3. Create API client for package storage endpoint.
+4. Implement StorePackageForm component.
+5. Implement success view with pickup code display.
+6. Create page component and wire up routes.
+7. Update governance records.
