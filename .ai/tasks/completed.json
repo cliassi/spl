@@ -364,10 +364,48 @@
         "apps/api/src/server.ts"
       ],
       "commitReferences": []
+    },
+    {
+      "id": "SPL-204",
+      "issueType": "task",
+      "epicId": "SPL-E02",
+      "parentId": null,
+      "summary": "Locker Inventory UI",
+      "description": "Create React page to display locker inventory with filters and availability status.",
+      "rationale": "Delivery agents need UI to view available lockers before storing packages.",
+      "acceptanceCriteria": [
+        "Locker inventory page at /lockers route",
+        "Filter by size (SMALL, MEDIUM, LARGE, ALL)",
+        "Filter by availability (available only, all)",
+        "Visual indicators for locker availability",
+        "Loading and error states handled",
+        "Accessible form controls"
+      ],
+      "labels": ["ui", "frontend", "sprint-2"],
+      "components": ["frontend"],
+      "priority": "high",
+      "storyPoints": 3,
+      "dependencies": ["SPL-203"],
+      "status": "DONE",
+      "assignee": null,
+      "createdAt": "2025-06-12T23:42:00+08:00",
+      "updatedAt": "2025-06-12T23:55:00+08:00",
+      "startedAt": "2025-06-12T23:52:00+08:00",
+      "completedAt": "2025-06-12T23:55:00+08:00",
+      "implementationNotes": "Created React components with TanStack Query: LockerCard, LockerList, LockersPage, API client, hooks. Features: size filter, availability filter, visual indicators, loading/error states, responsive grid.",
+      "testEvidence": "Component structure complete, integration tests in SPL-205",
+      "relatedFiles": [
+        "apps/web/src/api/lockerApi.ts",
+        "apps/web/src/hooks/useLockers.ts",
+        "apps/web/src/components/lockers/LockerCard.tsx",
+        "apps/web/src/components/lockers/LockerList.tsx",
+        "apps/web/src/routes/lockers/LockersPage.tsx"
+      ],
+      "commitReferences": []
     }
   ],
   "metadata": {
-    "totalCompleted": 9,
-    "lastUpdated": "2025-06-12T23:48:00+08:00"
+    "totalCompleted": 10,
+    "lastUpdated": "2025-06-12T23:55:00+08:00"
   }
 }
