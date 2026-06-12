@@ -1,0 +1,1259 @@
+Paste the following into Windsurf at the root of the empty Smart Package Locker repository.
+
+```text
+You are acting as the senior engineer responsible for building an interview coding challenge from an empty repository.
+
+Project name:
+
+Smart Package Locker Management System
+
+This project must demonstrate hands-on engineering, technical leadership, architectural reasoning, testing discipline, security awareness, cloud readiness, responsible AI usage, and clear communication.
+
+The code must remain small enough for its author to understand and explain completely during an interview.
+
+Do not generate the entire application in one pass. Work incrementally, one reviewed and verified task at a time.
+
+==================================================
+1. PRODUCT OBJECTIVE
+==================================================
+
+Build a package-locker system that allows:
+
+- Delivery agents to store packages.
+- The system to allocate a suitable locker.
+- Customers to retrieve packages using a pickup code.
+- The system to calculate extended-storage charges.
+- Multiple requests to allocate lockers safely without conflicts.
+
+Implement the challenge’s Levels 1–3 completely.
+
+Implement Level 4 through database-level concurrency protection and tests. Do not build unnecessary distributed infrastructure.
+
+The application should include:
+
+- A React frontend.
+- A Node.js and TypeScript backend.
+- PostgreSQL persistence.
+- REST APIs.
+- Unit, integration, API, and Playwright end-to-end tests.
+- Docker-based local development.
+- CI configuration.
+- Architecture and interview documentation.
+
+==================================================
+2. ENGINEERING GOALS
+==================================================
+
+Optimize for:
+
+- Correctness
+- Clarity
+- Maintainability
+- SOLID principles where useful
+- Practical object-oriented programming
+- Test-driven development
+- Explicit business rules
+- Secure defaults
+- Reliable error handling
+- Accessibility
+- Observability
+- Production awareness
+- Easy local setup
+- Explainable decisions
+- Responsible AI-assisted development
+
+Every meaningful engineering decision must be defensible:
+
+- What problem does it solve?
+- Why was this approach selected?
+- What alternatives were considered?
+- What tradeoffs were accepted?
+- How is the behavior verified?
+- When should the decision be revisited?
+
+Do not add interfaces, patterns, packages, layers, or infrastructure merely to look sophisticated.
+
+Prefer code that explains itself. Add comments only for non-obvious business rules, security constraints, concurrency behavior, or important tradeoffs.
+
+==================================================
+3. RESPONSIBLE AI RULES
+==================================================
+
+AI may assist with:
+
+- Planning
+- Scaffolding
+- Implementation
+- Test generation
+- Documentation
+- Code review
+- Debugging
+
+However:
+
+- Never fabricate completed work.
+- Never fabricate test results.
+- Never claim a command ran unless it actually ran.
+- Never record secrets or credentials.
+- Never expose or store hidden chain-of-thought.
+- Record concise reasoning summaries, alternatives, evidence, and decisions instead.
+- Review generated code against the requirements and existing architecture.
+- Challenge requests that would introduce unnecessary scope, risk, or inconsistency.
+
+Create `docs/AI_USAGE.md` to disclose:
+
+- AI tools used
+- Types of assistance received
+- Human direction and review
+- Suggestions accepted
+- Suggestions modified or rejected
+- Verification performed
+- Known risks of AI-generated work
+
+==================================================
+4. TECHNOLOGY STACK
+==================================================
+
+Use:
+
+Frontend:
+- React
+- TypeScript
+- Vite
+- React Router
+- TanStack Query
+- React Hook Form
+- Zod
+- Vitest
+- React Testing Library
+- Playwright
+
+Backend:
+- Node.js
+- TypeScript
+- Fastify
+- Zod or Fastify JSON Schema for runtime validation
+- PostgreSQL
+- Drizzle ORM and SQL migrations
+- Vitest
+- Testcontainers or an isolated PostgreSQL test database
+
+Tooling:
+- pnpm workspaces
+- ESLint
+- Prettier
+- Docker
+- Docker Compose
+- GitHub Actions
+
+Use currently compatible stable versions. Document exact versions in the repository.
+
+Do not add:
+
+- Authentication
+- Payment processing
+- Kafka
+- Kubernetes manifests
+- Multiple deployable microservices
+- Redis
+- A complex design system
+- Cloud provisioning
+
+These may be discussed as production evolution, but they are not required for this challenge.
+
+==================================================
+5. ARCHITECTURAL DIRECTION
+==================================================
+
+Use a modular monolith.
+
+Reasons:
+
+- The domain and project scope are small.
+- Locker allocation and storage require transactional consistency.
+- A single deployable is easier to operate and review.
+- Microservices would introduce network, deployment, consistency, and observability overhead without current value.
+- Clear module boundaries preserve a future extraction path.
+
+Use these conceptual layers in the backend:
+
+- Domain: entities, value objects, policies, invariants, domain errors
+- Application: use cases, ports, orchestration, transaction boundaries
+- Infrastructure: PostgreSQL, repositories, hashing, clocks, logging
+- Presentation: HTTP routes, validation, request and response mapping
+
+Dependencies must point inward.
+
+HTTP concepts must not enter the domain layer.
+
+Database records must not be returned directly as API responses.
+
+Create interfaces only at meaningful boundaries, such as:
+
+- LockerRepository
+- PackageRepository
+- StorageAssignmentRepository
+- UnitOfWork or TransactionManager
+- Clock
+- PickupCodeGenerator
+- PickupCodeHasher
+- StorageChargePolicy
+
+Do not create an interface for every class.
+
+==================================================
+6. REPOSITORY STRUCTURE
+==================================================
+
+Create this target structure incrementally:
+
+/
+  apps/
+    web/
+      src/
+        app/
+        features/
+        shared/
+        styles/
+        test/
+    api/
+      src/
+        app/
+        modules/
+        shared/
+        test/
+  packages/
+    contracts/
+    config/
+  database/
+    migrations/
+    seeds/
+  e2e/
+  docs/
+    ARCHITECTURE.md
+    DOMAIN_MODEL.md
+    API.md
+    TESTING.md
+    SECURITY.md
+    OPERATIONS.md
+    DECISIONS.md
+    AI_USAGE.md
+    INTERVIEW_GUIDE.md
+  .ai/
+  .github/
+    workflows/
+  compose.yaml
+  package.json
+  pnpm-workspace.yaml
+  README.md
+
+Keep shared packages minimal.
+
+`packages/contracts` may contain API request and response schemas and inferred TypeScript types. It must not own backend domain entities.
+
+==================================================
+7. FRONTEND STRUCTURE
+==================================================
+
+Use feature-oriented React organization:
+
+apps/web/src/
+  app/
+    App.tsx
+    router.tsx
+    providers.tsx
+  features/
+    lockers/
+      api/
+      components/
+      hooks/
+      pages/
+      schemas/
+      types/
+    storage/
+      api/
+      components/
+      hooks/
+      pages/
+      schemas/
+      types/
+    retrieval/
+      api/
+      components/
+      hooks/
+      pages/
+      schemas/
+      types/
+  shared/
+    api/
+    components/
+    errors/
+    hooks/
+    utils/
+  styles/
+  test/
+  main.tsx
+
+Required screens:
+
+- Locker inventory and availability
+- Store package form
+- Successful locker assignment
+- One-time pickup-code display
+- Retrieve package form
+- Retrieval confirmation
+- Storage-charge display
+- Clear loading, empty, success, and error states
+
+Frontend rules:
+
+- Keep business rules authoritative on the server.
+- Client validation exists for usability, not security.
+- Use semantic HTML.
+- Support keyboard navigation.
+- Provide accessible labels and error messages.
+- Avoid global state unless it solves a real cross-feature need.
+- Test user behavior rather than implementation details.
+- Never expose pickup codes after their initial successful creation response.
+
+==================================================
+8. BACKEND STRUCTURE
+==================================================
+
+Use this module organization:
+
+apps/api/src/
+  app/
+    buildApp.ts
+    config.ts
+    server.ts
+  modules/
+    lockers/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+    packages/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+    storage/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+    retrieval/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+    storageCharges/
+      domain/
+      application/
+      infrastructure/
+      presentation/
+  shared/
+    domain/
+    application/
+    infrastructure/
+    presentation/
+    observability/
+    security/
+  test/
+
+Potential application use cases:
+
+- ListLockers
+- StorePackage
+- RetrievePackage
+- GetPackage
+- CalculateStorageCharge
+
+Do not force each use case into unnecessary classes if a simpler existing pattern is clearer. Remain consistent once a pattern is selected.
+
+==================================================
+9. DOMAIN RULES
+==================================================
+
+Locker sizes:
+
+- SMALL
+- MEDIUM
+- LARGE
+
+Package sizes:
+
+- SMALL
+- MEDIUM
+- LARGE
+
+Size order:
+
+SMALL < MEDIUM < LARGE
+
+Core rules:
+
+1. A locker can contain at most one active package.
+2. A package must fit inside its locker.
+3. Select the smallest available locker that can accommodate the package.
+4. A larger locker may be selected when the exact size is unavailable.
+5. Selection within the same size must be deterministic.
+6. If no suitable locker exists, return a clear domain error.
+7. Storing a package generates a cryptographically secure pickup code.
+8. Return the plaintext pickup code exactly once.
+9. Persist only a secure hash of the pickup code.
+10. Retrieval requires the locker identifier and correct pickup code.
+11. Invalid, expired if expiration is introduced, or reused codes must fail.
+12. Successful retrieval releases the locker.
+13. Retrieval must be idempotent or explicitly reject repeated retrieval consistently.
+14. Package and assignment state transitions must be explicit.
+15. Extended storage charges begin after a configurable grace period.
+16. Monetary amounts must use integer minor units, never floating-point arithmetic.
+17. Time-dependent behavior must use an injected Clock.
+18. Concurrent requests must never allocate the same locker.
+19. Storage and retrieval operations must be transactional.
+20. Inputs must be validated at the API boundary.
+
+Document assumptions when the challenge brief is ambiguous.
+
+Do not silently invent product requirements.
+
+==================================================
+10. DATABASE DESIGN
+==================================================
+
+Use PostgreSQL.
+
+Initial tables:
+
+lockers
+- id UUID primary key
+- code VARCHAR unique not null
+- size constrained value not null
+- created_at TIMESTAMPTZ not null
+- updated_at TIMESTAMPTZ not null
+
+packages
+- id UUID primary key
+- reference VARCHAR unique not null
+- size constrained value not null
+- status constrained value not null
+- stored_at TIMESTAMPTZ
+- retrieved_at TIMESTAMPTZ
+- created_at TIMESTAMPTZ not null
+- updated_at TIMESTAMPTZ not null
+
+storage_assignments
+- id UUID primary key
+- locker_id UUID not null
+- package_id UUID not null
+- pickup_code_hash VARCHAR not null
+- assigned_at TIMESTAMPTZ not null
+- retrieved_at TIMESTAMPTZ
+- storage_charge_minor_units BIGINT
+- currency CHAR(3)
+- created_at TIMESTAMPTZ not null
+- updated_at TIMESTAMPTZ not null
+
+Consider whether locker availability should be derived from active assignments instead of storing a duplicate locker status.
+
+Record and justify the final decision.
+
+Add:
+
+- Foreign keys
+- Check constraints
+- Unique constraints
+- Useful indexes
+- Transaction boundaries
+- Deterministic seed data
+
+Prevent double allocation using a PostgreSQL partial unique index:
+
+- Only one assignment per locker where `retrieved_at IS NULL`
+
+Use a transaction and row-locking strategy when selecting a locker. Document the selected PostgreSQL concurrency mechanism and test it.
+
+Do not rely only on application-level checks for concurrency correctness.
+
+==================================================
+11. API DESIGN
+==================================================
+
+Suggested endpoints:
+
+GET /health
+GET /ready
+GET /api/v1/lockers
+POST /api/v1/packages/storage
+POST /api/v1/packages/retrieval
+GET /api/v1/packages/:id
+
+Example storage request:
+
+{
+  "reference": "PKG-10001",
+  "size": "MEDIUM"
+}
+
+Example successful storage response:
+
+{
+  "packageId": "...",
+  "lockerId": "...",
+  "lockerCode": "L-M-001",
+  "pickupCode": "...",
+  "storedAt": "..."
+}
+
+Example retrieval request:
+
+{
+  "lockerCode": "L-M-001",
+  "pickupCode": "..."
+}
+
+Use:
+
+- Versioned routes
+- Runtime request validation
+- Correct HTTP status codes
+- Consistent API response shapes
+- Consistent error responses
+- Request correlation IDs
+- Structured logs
+- Idempotency considerations for writes
+
+Standard error response:
+
+{
+  "code": "NO_SUITABLE_LOCKER",
+  "message": "No suitable locker is currently available.",
+  "requestId": "...",
+  "details": []
+}
+
+Do not:
+
+- Return stack traces
+- Leak database errors
+- Log pickup codes
+- Log pickup-code hashes
+- Return internal database representations directly
+
+==================================================
+12. SECURITY
+==================================================
+
+Implement and document:
+
+- Runtime input validation
+- Secure pickup-code generation
+- One-way pickup-code hashing
+- Constant-time comparison where applicable
+- Secure HTTP headers
+- Parameterized database access
+- Environment-based secrets
+- Sensitive-data log redaction
+- Generic retrieval errors where appropriate
+- Rate-limiting as a documented production requirement
+- Dependency auditing in CI where practical
+
+Authentication is intentionally out of scope. Explain how authentication and authorization would change the delivery-agent and customer operations in production.
+
+==================================================
+13. STORAGE CHARGES
+==================================================
+
+Make the storage-charge policy configurable.
+
+Example policy:
+
+- First 24 hours: free
+- After 24 hours: fixed amount per started additional day
+- Currency: configurable, default USD unless the challenge specifies otherwise
+
+Do not hardcode time access through `new Date()` inside domain logic.
+
+Use an injected Clock.
+
+Use integer minor units:
+
+- 500 means $5.00
+- Never use floating-point values for money
+
+Define and test boundary behavior:
+
+- Immediately before grace-period expiry
+- Exactly at grace-period expiry
+- One second after expiry
+- Multiple additional days
+- Retrieval after a long period
+
+Record the chosen rounding behavior as a decision.
+
+==================================================
+14. EVENTS AND FUTURE SERVICES
+==================================================
+
+Represent important domain events where useful:
+
+- PackageStored
+- PackageRetrieved
+- StorageChargeCalculated
+
+Keep event handling in-process initially.
+
+Do not add Kafka, RabbitMQ, or another broker merely to satisfy a job-description keyword.
+
+Document:
+
+- Why in-process events are sufficient now
+- When durable events would become necessary
+- How a transactional outbox would be introduced
+- Potential future service boundaries
+- Delivery guarantees and idempotency concerns
+
+==================================================
+15. OBSERVABILITY AND OPERATIONS
+==================================================
+
+Implement lightweight operational readiness:
+
+- Structured JSON logs
+- Correlation/request IDs
+- Request duration logging
+- Error logging without sensitive data
+- Health endpoint
+- Readiness endpoint checking database connectivity
+- Graceful shutdown
+- Basic metrics or an OpenTelemetry-ready integration point
+- Environment-based configuration
+
+Create `docs/OPERATIONS.md` covering:
+
+- Local startup
+- Configuration
+- Health and readiness
+- Logs
+- Common failure scenarios
+- Database migrations
+- Backup and recovery considerations
+- Production deployment considerations
+
+==================================================
+16. AWS AND CLOUD-NATIVE READINESS
+==================================================
+
+Do not provision AWS resources.
+
+Document a credible AWS deployment in `docs/ARCHITECTURE.md` or `docs/OPERATIONS.md`:
+
+- React static assets: S3 and CloudFront
+- API: ECS Fargate as the default recommendation
+- PostgreSQL: RDS PostgreSQL
+- Load balancing: Application Load Balancer
+- Secrets: AWS Secrets Manager
+- Logs and alarms: CloudWatch
+- Tracing: OpenTelemetry or X-Ray
+- TLS: ACM
+- Edge protection: AWS WAF
+- Images: ECR
+- Autoscaling: ECS service autoscaling
+- CI/CD: GitHub Actions with short-lived AWS credentials through OIDC
+
+Explain why ECS Fargate is preferred over EKS for this project’s current scale.
+
+Mention Kubernetes as a valid organizational platform choice, but do not create Kubernetes configuration without a requirement.
+
+==================================================
+17. TESTING STRATEGY
+==================================================
+
+Use a practical testing pyramid.
+
+Backend unit tests:
+
+- Size compatibility
+- Smallest suitable locker policy
+- Deterministic selection
+- State transitions
+- Invalid operations
+- Pickup-code behavior
+- Storage-charge calculations
+- Time boundaries
+
+Backend integration tests:
+
+- Repository behavior
+- PostgreSQL constraints
+- Transactions
+- Migrations
+- Partial unique index
+- Concurrent locker allocation
+- API validation
+- Domain-error-to-HTTP mapping
+- Retrieval and locker release
+
+Frontend tests:
+
+- Form validation
+- Loading and error states
+- Successful storage result
+- One-time pickup-code presentation
+- Retrieval result
+- Accessible interactions
+
+Playwright end-to-end tests:
+
+- Delivery agent stores a SMALL package
+- Exact-size locker is selected
+- Larger locker is used when exact size is unavailable
+- Smallest suitable available locker is selected
+- No suitable locker returns a clear error
+- Customer retrieves with a valid code
+- Invalid pickup code is rejected
+- Reused pickup code is rejected
+- Retrieved locker becomes available
+- Extended storage charge is displayed
+- Important flow is keyboard accessible
+
+Playwright is not a replacement for unit and integration tests.
+
+Avoid:
+
+- Arbitrary sleeps
+- Tests depending on execution order
+- Tests sharing mutable state
+- Assertions on implementation details
+- Requiring 100% coverage merely for appearance
+
+Set meaningful coverage thresholds after the first vertical slice. Prioritize important branches and domain behavior.
+
+==================================================
+18. CI/CD
+==================================================
+
+Create a GitHub Actions pipeline that runs:
+
+- Dependency installation with lockfile enforcement
+- Formatting check
+- Linting
+- Type checking
+- Unit tests
+- Integration tests
+- Production builds
+- Playwright tests
+- Migration validation
+- Dependency audit where practical
+- Docker image build
+
+CI must fail when required checks fail.
+
+Use caching where appropriate.
+
+Do not publish or deploy automatically unless explicitly requested.
+
+==================================================
+19. DOCUMENTATION
+==================================================
+
+README.md must contain:
+
+- Problem statement
+- Implemented scope
+- Technology stack
+- Quick start
+- Environment configuration
+- Database setup
+- Migration and seed commands
+- Architecture summary
+- API examples
+- Test commands
+- Assumptions
+- Tradeoffs
+- Known limitations
+- Production evolution
+- AI disclosure link
+
+docs/ARCHITECTURE.md must contain:
+
+- System context
+- Container diagram
+- Backend module boundaries
+- Dependency direction
+- Request flow
+- Storage flow
+- Retrieval flow
+- Concurrency approach
+- Deployment design
+- Scaling considerations
+- Future service boundaries
+
+Use Mermaid diagrams where useful.
+
+docs/DOMAIN_MODEL.md must contain:
+
+- Entities
+- Value objects
+- Invariants
+- State transitions
+- Allocation policy
+- Charge policy
+- Domain errors
+- Ambiguous requirements and assumptions
+
+docs/TESTING.md must contain:
+
+- Testing pyramid
+- Test types
+- Test-data isolation
+- Concurrency-test approach
+- Coverage philosophy
+- Commands
+- What is intentionally not tested
+
+docs/INTERVIEW_GUIDE.md must contain concise answers to:
+
+- Why a modular monolith?
+- Why not microservices?
+- Why Fastify?
+- Why PostgreSQL?
+- Why Drizzle?
+- Why REST instead of GraphQL?
+- How is the smallest suitable locker selected?
+- How is double allocation prevented?
+- Why is the database constraint necessary?
+- Why are pickup codes hashed?
+- Why is time injected?
+- Why is money stored in minor units?
+- How does retrieval release a locker?
+- How would the application scale?
+- How would this run on AWS?
+- When would events need a message broker?
+- How would authentication change the design?
+- What are the main security risks?
+- What would be improved with more time?
+- How was AI used and verified?
+
+==================================================
+20. AI GOVERNANCE DIRECTORY
+==================================================
+
+Create:
+
+.ai/
+  README.md
+  rules.md
+  NEXT.md
+  log/
+  mem/
+    project.md
+    domain.md
+    architecture.md
+    conventions.md
+  decisions/
+    README.md
+  tasks/
+    README.md
+    task.schema.json
+    backlog.json
+    active.json
+    completed.json
+    SANITY.md
+    sprints/
+      sprint-01.md
+
+Do not copy files from another project.
+
+Create clean Smart Package Locker-specific content from scratch.
+
+--------------------------------------------------
+20.1 SESSION LOGS
+--------------------------------------------------
+
+Use:
+
+.ai/log/YYYY-MM-DD.md
+
+Append one entry after meaningful work:
+
+## Turn N — HH:MM UTC+08
+
+### User Prompt
+Record the prompt, redacting secrets and sensitive information.
+
+### Work Summary
+Record what was actually done.
+
+### Files Changed
+List changed files and their purposes.
+
+### Commands and Verification
+Record commands and actual results.
+
+### Decisions
+Record concise reasoning and tradeoffs.
+
+### Risks or Blockers
+Record unresolved issues.
+
+### Next Action
+Record one recommended next action.
+
+Do not record hidden chain-of-thought.
+
+--------------------------------------------------
+20.2 PROJECT MEMORY
+--------------------------------------------------
+
+Memory files are living summaries, not transcripts.
+
+`project.md`:
+- Objective
+- Scope
+- Stack
+- Current status
+- Test status
+- Risks
+- Deferred work
+
+`domain.md`:
+- Business terms
+- Rules
+- Invariants
+- State transitions
+- Assumptions
+
+`architecture.md`:
+- Architecture
+- Boundaries
+- Dependency flow
+- Infrastructure
+- Operational decisions
+
+`conventions.md`:
+- Naming
+- File organization
+- Error handling
+- Testing
+- Git
+- API conventions
+
+Replace obsolete information rather than accumulating contradictions.
+
+--------------------------------------------------
+20.3 ARCHITECTURE DECISIONS
+--------------------------------------------------
+
+Use:
+
+.ai/decisions/ADR-NNN-short-title.md
+
+Each ADR must include:
+
+- Status
+- Date
+- Context
+- Decision
+- Alternatives considered
+- Positive consequences
+- Negative consequences
+- Risks
+- Mitigations
+- Verification
+- Revisit conditions
+
+Initial decisions likely include:
+
+- Modular monolith
+- Fastify
+- PostgreSQL
+- Drizzle
+- REST API
+- Feature-oriented React structure
+- Hashed pickup codes
+- Injected clock
+- Integer minor units
+- Database-enforced allocation
+- In-process domain events
+
+Do not create an ADR for trivial implementation choices.
+
+--------------------------------------------------
+20.4 TASK MANAGEMENT
+--------------------------------------------------
+
+JSON is the canonical Jira-importable task format.
+
+Use:
+
+.ai/tasks/task.schema.json
+.ai/tasks/backlog.json
+.ai/tasks/active.json
+.ai/tasks/completed.json
+
+Task fields:
+
+- id
+- issueType
+- epicId
+- parentId
+- summary
+- description
+- rationale
+- acceptanceCriteria
+- labels
+- components
+- priority
+- storyPoints
+- dependencies
+- status
+- assignee
+- createdAt
+- updatedAt
+- startedAt
+- completedAt
+- implementationNotes
+- testEvidence
+- relatedFiles
+- commitReferences
+
+IDs:
+
+- SPL-E01 onward for epics
+- SPL-101 onward for stories and tasks
+- SPL-B01 onward for bugs
+- SPL-S01 onward for spikes
+
+Statuses:
+
+- BACKLOG
+- READY
+- IN_PROGRESS
+- BLOCKED
+- IN_REVIEW
+- DONE
+- ARCHIVED
+
+Only one task may be IN_PROGRESS unless parallel work is explicitly justified.
+
+Sprint Markdown files are human-readable summaries. JSON remains canonical.
+
+--------------------------------------------------
+20.5 SANITY LOG
+--------------------------------------------------
+
+Before meaningful scope or design changes, append to:
+
+.ai/tasks/SANITY.md
+
+Format:
+
+## [S-NNN] YYYY-MM-DD — Question
+
+**Context**
+
+**Decision**
+
+**Why**
+
+**Alternatives**
+
+**Benefits**
+
+**Costs and risks**
+
+**Mitigation**
+
+**Verification**
+
+**Revisit when**
+
+Use ADRs for architectural decisions and SANITY entries for smaller scope or implementation decisions.
+
+--------------------------------------------------
+20.6 NEXT FILE
+--------------------------------------------------
+
+`.ai/NEXT.md` is a short, replaceable bookmark.
+
+Do not use it as an append-only history.
+
+Keep it under approximately 100 lines.
+
+Format:
+
+# Smart Package Locker — Next Action
+
+## Current State
+- Sprint
+- Active task
+- Status
+- Repository state
+- Passing checks
+- Blockers
+
+## Completed Most Recently
+Short summary.
+
+## Next Action
+Exactly one action.
+
+## Acceptance Criteria
+Checklist for that action.
+
+## Relevant Files
+Only files needed next.
+
+## Verification
+Exact commands.
+
+## Resume Protocol
+When the user says "continue":
+1. Read NEXT.md.
+2. Read the active task.
+3. Read relevant memory and ADRs.
+4. Inspect repository state.
+5. Execute the next action.
+6. Verify it.
+7. Update governance records.
+
+Historical details belong in logs and completed tasks.
+
+==================================================
+21. ROOT WINDSURF RULES
+==================================================
+
+Create `.windsurfrules`.
+
+It must enforce:
+
+- Reading `.ai/NEXT.md` for “continue”, “resume”, and “where were we”.
+- Reading the active task before implementation.
+- Inspecting existing code before editing.
+- Stating the task, intended changes, acceptance criteria, and verification before implementation.
+- Using TDD for business behavior.
+- Running relevant verification after edits.
+- Recording actual results.
+- Updating AI governance files after meaningful work.
+- Avoiding scope creep.
+- Challenging conflicting or risky requests.
+- Never fabricating evidence.
+- Never storing secrets or hidden chain-of-thought.
+- Keeping one active task.
+- Keeping NEXT.md accurate and concise.
+- Not declaring work complete when required checks fail.
+
+==================================================
+22. TASK COMPLETION DEFINITION
+==================================================
+
+A task is DONE only when:
+
+- Acceptance criteria are satisfied.
+- Relevant tests pass.
+- Type checking passes.
+- Linting passes.
+- Formatting checks pass.
+- Documentation is updated where required.
+- Test evidence is recorded.
+- Memory remains accurate.
+- The task is moved to completed.json.
+- NEXT.md identifies the next action.
+
+If verification cannot run, keep the task out of DONE and document the blocker.
+
+==================================================
+23. DELIVERY PLAN
+==================================================
+
+Create epics and tasks for this sequence:
+
+Sprint 1: Foundation
+- AI governance
+- Requirements and assumptions
+- Architecture
+- Repository tooling
+- Docker development environment
+- Database migration foundation
+
+Sprint 2: Locker Inventory
+- Domain size model
+- Locker migration and seed data
+- Locker repository
+- Locker-listing API
+- Locker inventory UI
+
+Sprint 3: Package Storage
+- Package domain model
+- Allocation policy
+- Pickup-code generation and hashing
+- Transactional storage use case
+- Storage API
+- Storage UI
+- Storage tests
+
+Sprint 4: Retrieval and Charges
+- Retrieval state transition
+- Pickup-code verification
+- Locker release
+- Charge policy
+- Retrieval API
+- Retrieval UI
+- Boundary tests
+
+Sprint 5: Concurrency and Reliability
+- Concurrent allocation protection
+- Database constraint tests
+- Structured logging
+- Health and readiness
+- Graceful shutdown
+- Security hardening
+
+Sprint 6: Delivery Quality
+- Playwright workflows
+- CI pipeline
+- Docker production builds
+- Documentation
+- Interview guide
+- AI disclosure
+- Final code review
+
+Do not pre-create application code for every sprint during initialization.
+
+==================================================
+24. FIRST EXECUTION
+==================================================
+
+The repository is empty.
+
+For the first execution only:
+
+1. Inspect the repository and Git status.
+2. Do not assume any existing project configuration.
+3. Create only:
+   - `.ai/`
+   - `.windsurfrules`
+   - the initial task backlog
+   - Sprint 1 task summary
+   - initial memory files
+   - initial architecture decision records
+   - `.ai/NEXT.md`
+4. Record the product requirements and explicit assumptions.
+5. Create Jira-compatible epics and small tasks.
+6. Set exactly one foundation task to IN_PROGRESS.
+7. Validate all task JSON against `task.schema.json`.
+8. Add the first session log.
+9. Report:
+   - Files created
+   - Initial decisions
+   - Active task
+   - Next action
+   - Validation performed
+
+Do not scaffold React, Node.js, PostgreSQL, or Docker during this first execution.
+
+Stop after the AI governance and planning foundation is complete. Wait for the user to say “continue”.
+```

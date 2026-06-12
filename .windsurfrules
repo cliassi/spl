@@ -1,0 +1,54 @@
+# Smart Package Locker — Windsurf Rules
+
+## Resume Protocol
+
+When the user says "continue", "resume", or "where were we":
+1. Read `.ai/NEXT.md` first.
+2. Read the active task from `.ai/tasks/active.json`.
+3. Read relevant memory files from `.ai/mem/`.
+4. Read relevant ADRs from `.ai/decisions/`.
+5. Inspect repository state.
+6. Execute the next action.
+7. Verify it.
+8. Update governance records.
+
+## Before Implementation
+
+1. State the task being worked on.
+2. State intended changes.
+3. State acceptance criteria.
+4. State verification method.
+5. Inspect existing code before editing.
+
+## Development Discipline
+
+- Use TDD for business behavior.
+- Run relevant verification after edits.
+- Record actual results.
+- Update AI governance files after meaningful work.
+- Avoid scope creep.
+- Challenge conflicting or risky requests.
+
+## Prohibitions
+
+- Never fabricate evidence (completed work, test results, command output).
+- Never store secrets or hidden chain-of-thought.
+- Never claim a command ran unless it actually ran.
+- Never record pickup codes or their hashes in logs.
+- Never declare work complete when required checks fail.
+
+## Task Management
+
+- Keep exactly one active task IN_PROGRESS unless parallel work is explicitly justified.
+- Keep `.ai/NEXT.md` accurate and concise (under 100 lines).
+- A task is DONE only when:
+  - Acceptance criteria are satisfied
+  - Relevant tests pass
+  - Type checking passes
+  - Linting passes
+  - Formatting checks pass
+  - Documentation is updated where required
+  - Test evidence is recorded
+  - Memory remains accurate
+  - The task is moved to `completed.json`
+  - `NEXT.md` identifies the next action
