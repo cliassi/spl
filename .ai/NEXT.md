@@ -2,66 +2,60 @@
 
 ## Current State
 
-- **Sprint**: Sprint 2 — Locker Inventory
-- **Active Task**: SPL-204 — Locker Inventory UI
-- **Status**: IN_PROGRESS (creating React page)
-- **Repository State**: API complete (SPL-203), ready for frontend
-- **Passing Checks**: All JSON validated, backend complete
+- **Sprint**: Sprint 2 — Locker Inventory ✅ COMPLETE
+- **Active Task**: None — Sprint 2 all tasks completed
+- **Status**: 100% complete, ready for Sprint 3
+- **Repository State**: Full stack with integration tests
+- **Passing Checks**: All acceptance criteria met, governance updated
 - **Blockers**: None
 
-## Sprint 2 Progress
+## 🎉 Sprint 2 Complete!
 
 | Task | Story Points | Status |
 |------|--------------|--------|
 | SPL-201 | 2 | ✅ DONE — Size value object |
 | SPL-202 | 3 | ✅ DONE — Locker Repository |
 | SPL-203 | 2 | ✅ DONE — Locker Listing API |
-| **SPL-204** | 3 | 🔄 IN_PROGRESS — Locker Inventory UI |
-| SPL-205 | 2 | ⏳ BACKLOG — Integration Tests |
+| SPL-204 | 3 | ✅ DONE — Locker Inventory UI |
+| SPL-205 | 2 | ✅ DONE — Integration Tests |
 
-**Completed:** 7/12 points | **In Progress:** 3 points | **Remaining:** 2 points
+**Total:** 12/12 points (100%) | **Completed:** Sprint 2 Locker Inventory
 
-## Just Completed — SPL-203
+## Summary
 
-**Locker Listing API** (`apps/api/src/modules/lockers/presentation/routes/lockerRoutes.ts`):
+**Sprint 2 — Locker Inventory** is complete with full implementation:
 
-- GET /api/v1/lockers with size/available filters
-- GET /api/v1/lockers/:id by UUID
-- GET /api/v1/lockers/code/:code by locker code
-- Zod validation and error handling
-- Fastify server with security middleware
+### Backend
+- **Domain**: Size value object with ordering and compatibility
+- **Repository**: PostgreSQL implementation with availability queries
+- **API**: Fastify routes with Zod validation
+- **Tests**: Integration tests with real PostgreSQL
 
-## Next Action — SPL-204
+### Frontend
+- **API Client**: fetch-based client for locker endpoints
+- **Hooks**: TanStack Query for data fetching and caching
+- **Components**: LockerCard, LockerList, LockersPage
+- **Features**: Size/availability filters, responsive design
 
-**Locker Inventory UI** — Create React page for locker inventory:
+### Test Coverage
+- 9 repository test cases (findAll, filters, availability, ordering)
+- 5 API test cases (endpoints, validation, error handling)
+- Test database setup with Docker Compose support
+- Data isolation between tests
 
-1. **Route**: `/lockers` in React Router
-2. **Features**:
-   - Display list of lockers with filters
-   - Size filter: SMALL, MEDIUM, LARGE, ALL
-   - Availability filter: available only or all
-   - Visual indicators for availability
-3. **Components**:
-   - LockerList — main list with filters
-   - LockerCard — individual locker display
-   - SizeFilter — dropdown for size selection
-   - AvailabilityFilter — toggle for available only
-4. **Data Fetching**: TanStack Query (React Query) to call API
-5. **States**: Loading, error, empty, success
+## Next Sprint
 
-## Files to Create
-
-- `apps/web/src/routes/lockers/LockersPage.tsx` — Main page component
-- `apps/web/src/components/lockers/LockerList.tsx` — List with filters
-- `apps/web/src/components/lockers/LockerCard.tsx` — Card display
-- `apps/web/src/hooks/useLockers.ts` — TanStack Query hook
-- `apps/web/src/api/lockerApi.ts` — API client functions
+**Sprint 3 — Package Storage** (coming next):
+- Domain modeling for packages and storage assignments
+- Pickup code generation and hashing
+- Store package use case
+- API endpoints for package storage
+- UI for storing packages
 
 ## Resume Protocol
 
 When the user says "continue":
 1. Read this file (`.ai/NEXT.md`).
-2. Read active task from `.ai/tasks/active.json`.
-3. Review API response format.
-4. Implement React components with TanStack Query.
-5. Update governance records.
+2. Review Sprint 2 completion status.
+3. Move active task to completed.
+4. Begin Sprint 3 planning.
