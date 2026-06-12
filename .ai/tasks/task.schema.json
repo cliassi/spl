@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["id", "issueType", "summary", "status", "createdAt"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^SPL-[E0-9]{2}[0-9]+$",
+      "description": "Unique identifier: SPL-E01+ for epics, SPL-101+ for stories/tasks, SPL-B01+ for bugs, SPL-S01+ for spikes"
+    },
+    "issueType": {
+      "type": "string",
+      "enum": ["epic", "story", "task", "bug", "spike"],
+      "description": "Type of work item"
+    },
+    "epicId": {
+      "type": ["string", "null"],
+      "description": "Parent epic ID if applicable"
+    },
+    "parentId": {
+      "type": ["string", "null"],
+      "description": "Parent task ID if applicable"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Short title of the work item"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the work"
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Why this work is needed"
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of acceptance criteria"
+    },
+    "labels": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for categorization"
+    },
+    "components": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Affected components (e.g., backend, frontend, database)"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["highest", "high", "medium", "low", "lowest"],
+      "description": "Priority level"
+    },
+    "storyPoints": {
+      "type": ["integer", "null"],
+      "description": "Story points estimate"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "IDs of blocking tasks"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["BACKLOG", "READY", "IN_PROGRESS", "BLOCKED", "IN_REVIEW", "DONE", "ARCHIVED"],
+      "description": "Current status"
+    },
+    "assignee": {
+      "type": ["string", "null"],
+      "description": "Person assigned to the task"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation timestamp"
+    },
+    "updatedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "startedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "When work started"
+    },
+    "completedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "When work completed"
+    },
+    "implementationNotes": {
+      "type": ["string", "null"],
+      "description": "Notes about implementation approach"
+    },
+    "testEvidence": {
+      "type": ["string", "null"],
+      "description": "Evidence of testing performed"
+    },
+    "relatedFiles": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Files created or modified"
+    },
+    "commitReferences": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Git commit references"
+    }
+  }
+}
