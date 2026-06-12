@@ -1,4 +1,5 @@
 import { pgTable, uuid, varchar, timestamp, check, index, unique, text } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 // Locker sizes enum values
 export const lockerSizeEnum = ['SMALL', 'MEDIUM', 'LARGE'] as const;
@@ -23,7 +24,7 @@ export const lockers = pgTable(
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
-    sizeCheck: check('size_check', table.size.in(['SMALL', 'MEDIUM', 'LARGE'])),
+    sizeCheck: check('size_check', sql`${table.size} IN ('SMALL', 'MEDIUM', 'LARGE')`),
     codeIndex: index('lockers_code_idx').on(table.code),
   })
 );
@@ -42,8 +43,8 @@ export const packages = pgTable(
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
-    sizeCheck: check('package_size_check', table.size.in(['SMALL', 'MEDIUM', 'LARGE'])),
-    statusCheck: check('status_check', table.status.in(['CREATED', 'STORED', 'RETRIEVED'])),
+    sizeCheck: check('package_size_check', sql`${table.size} IN ('SMALL', 'MEDIUM', 'LARGE')`),
+    statusCheck: check('status_check', sql`${table.status} IN ('CREATED', 'STORED', 'RETRIEVED')`),
     referenceIndex: index('packages_reference_idx').on(table.reference),
     statusIndex: index('packages_status_idx').on(table.status),
   })

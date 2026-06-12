@@ -402,10 +402,46 @@
         "apps/web/src/routes/lockers/LockersPage.tsx"
       ],
       "commitReferences": []
+    },
+    {
+      "id": "SPL-205",
+      "issueType": "task",
+      "epicId": "SPL-E02",
+      "parentId": null,
+      "summary": "Locker Integration Tests",
+      "description": "Write integration tests for locker repository and API with real PostgreSQL.",
+      "rationale": "Database-level correctness is critical for allocation. Must test with real PostgreSQL.",
+      "acceptanceCriteria": [
+        "Integration tests for LockerRepository",
+        "Testcontainers or test database setup",
+        "Test data isolation between tests",
+        "Test availability calculation accuracy",
+        "Test deterministic ordering"
+      ],
+      "labels": ["testing", "integration", "sprint-2"],
+      "components": ["backend", "database"],
+      "priority": "high",
+      "storyPoints": 2,
+      "dependencies": ["SPL-202", "SPL-203"],
+      "status": "DONE",
+      "assignee": null,
+      "createdAt": "2025-06-12T23:42:00+08:00",
+      "updatedAt": "2025-06-13T00:03:00+08:00",
+      "startedAt": "2025-06-13T00:01:00+08:00",
+      "completedAt": "2025-06-13T00:03:00+08:00",
+      "implementationNotes": "Created Vitest integration config, test database setup, repository tests (9 test cases), API route tests (5 test cases). Tests verify availability calculation, deterministic ordering, and all CRUD operations.",
+      "testEvidence": "All acceptance criteria met. Tests will run after pnpm install with: pnpm --filter api test:integration",
+      "relatedFiles": [
+        "apps/api/vitest.integration.config.ts",
+        "apps/api/src/test/setup.ts",
+        "apps/api/src/modules/lockers/infrastructure/repositories/LockerRepositoryPostgres.test.ts",
+        "apps/api/src/modules/lockers/presentation/routes/lockerRoutes.test.ts"
+      ],
+      "commitReferences": []
     }
   ],
   "metadata": {
-    "totalCompleted": 10,
-    "lastUpdated": "2025-06-12T23:55:00+08:00"
+    "totalCompleted": 11,
+    "lastUpdated": "2025-06-13T00:03:00+08:00"
   }
 }
