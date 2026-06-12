@@ -2,60 +2,66 @@
 
 ## Current State
 
-- **Sprint**: Sprint 2 — Locker Inventory ✅ COMPLETE
-- **Active Task**: None — Sprint 2 all tasks completed
-- **Status**: 100% complete, ready for Sprint 3
-- **Repository State**: Full stack with integration tests
-- **Passing Checks**: All acceptance criteria met, governance updated
+- **Sprint**: Sprint 3 — Package Storage 🚀 IN_PROGRESS
+- **Active Task**: SPL-206 — Package Domain Model
+- **Status**: IN_PROGRESS (on feat/SPL-206 branch)
+- **Repository State**: Sprint 2 complete, Sprint 3 started
+- **Passing Checks**: Sprint 2 all tasks committed and pushed
 - **Blockers**: None
 
-## 🎉 Sprint 2 Complete!
+## Sprint 3 Progress
 
 | Task | Story Points | Status |
 |------|--------------|--------|
-| SPL-201 | 2 | ✅ DONE — Size value object |
-| SPL-202 | 3 | ✅ DONE — Locker Repository |
-| SPL-203 | 2 | ✅ DONE — Locker Listing API |
-| SPL-204 | 3 | ✅ DONE — Locker Inventory UI |
-| SPL-205 | 2 | ✅ DONE — Integration Tests |
+| **SPL-206** | 3 | 🔄 IN_PROGRESS — Package Domain Model |
+| SPL-207 | 2 | ⏳ BACKLOG — Pickup Code Generation & Hashing |
+| SPL-208 | 3 | ⏳ BACKLOG — Store Package Use Case |
+| SPL-209 | 2 | ⏳ BACKLOG — Package Storage API |
+| SPL-210 | 3 | ⏳ BACKLOG — Package Storage UI |
 
-**Total:** 12/12 points (100%) | **Completed:** Sprint 2 Locker Inventory
+**Completed:** 0/13 points (0%) | **Sprint 3 Total:** 13 points
 
-## Summary
+## Previous Sprint
 
-**Sprint 2 — Locker Inventory** is complete with full implementation:
+**Sprint 2 — Locker Inventory**: ✅ COMPLETE (12/12 points)
 
-### Backend
-- **Domain**: Size value object with ordering and compatibility
-- **Repository**: PostgreSQL implementation with availability queries
-- **API**: Fastify routes with Zod validation
-- **Tests**: Integration tests with real PostgreSQL
+## Next Action — SPL-206
 
-### Frontend
-- **API Client**: fetch-based client for locker endpoints
-- **Hooks**: TanStack Query for data fetching and caching
-- **Components**: LockerCard, LockerList, LockersPage
-- **Features**: Size/availability filters, responsive design
+**Package Domain Model** — Core entities for package storage:
 
-### Test Coverage
-- 9 repository test cases (findAll, filters, availability, ordering)
-- 5 API test cases (endpoints, validation, error handling)
-- Test database setup with Docker Compose support
-- Data isolation between tests
+1. **Package Entity**:
+   - `reference`: Unique package identifier (string)
+   - `size`: Size value object (SMALL, MEDIUM, LARGE)
+   - `status`: Enum (CREATED, STORED, RETRIEVED)
+   - `storedAt`: Timestamp when stored
+   - `retrievedAt`: Timestamp when retrieved
+   - `createdAt`, `updatedAt`: Audit timestamps
 
-## Next Sprint
+2. **StorageAssignment Entity**:
+   - `packageId`: Reference to package
+   - `lockerId`: Reference to locker
+   - `pickupCodeHash`: Secure hash of pickup code (never plaintext)
+   - `createdAt`: When assignment was created
 
-**Sprint 3 — Package Storage** (coming next):
-- Domain modeling for packages and storage assignments
-- Pickup code generation and hashing
-- Store package use case
-- API endpoints for package storage
-- UI for storing packages
+3. **Domain Invariants**:
+   - One active package per locker maximum
+   - Package state transitions: CREATED → STORED → RETRIEVED
+   - StoredAt set when status changes to STORED
+   - RetrievedAt set when status changes to RETRIEVED
+
+4. **Files to Create**:
+   - `apps/api/src/modules/packages/domain/entities/Package.ts`
+   - `apps/api/src/modules/packages/domain/entities/StorageAssignment.ts`
+   - `apps/api/src/modules/packages/domain/entities/Package.test.ts`
+   - `apps/api/src/modules/packages/domain/entities/StorageAssignment.test.ts`
+   - `apps/api/src/modules/packages/domain/enums/PackageStatus.ts`
 
 ## Resume Protocol
 
 When the user says "continue":
 1. Read this file (`.ai/NEXT.md`).
-2. Review Sprint 2 completion status.
-3. Move active task to completed.
-4. Begin Sprint 3 planning.
+2. Read active task from `.ai/tasks/active.json`.
+3. Implement Package entity with state transitions.
+4. Implement StorageAssignment entity.
+5. Write unit tests for entities.
+6. Update governance records.
