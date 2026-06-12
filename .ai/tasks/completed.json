@@ -438,10 +438,48 @@
         "apps/api/src/modules/lockers/presentation/routes/lockerRoutes.test.ts"
       ],
       "commitReferences": []
+    },
+    {
+      "id": "SPL-206",
+      "issueType": "task",
+      "epicId": "SPL-E03",
+      "parentId": null,
+      "summary": "Package Domain Model",
+      "description": "Implement Package entity, StorageAssignment entity, and domain invariants for package storage lifecycle.",
+      "rationale": "Core domain model for package storage operations. Must enforce one active package per locker invariant.",
+      "acceptanceCriteria": [
+        "Package entity with reference, size, status (CREATED, STORED, RETRIEVED), timestamps",
+        "StorageAssignment entity linking package to locker with pickupCodeHash",
+        "Domain invariant: one active package per locker maximum",
+        "Package state transitions: CREATED → STORED → RETRIEVED",
+        "Unit tests for entity creation and state transitions"
+      ],
+      "labels": ["domain", "entities", "sprint-3"],
+      "components": ["backend"],
+      "priority": "high",
+      "storyPoints": 3,
+      "dependencies": ["SPL-205"],
+      "status": "DONE",
+      "assignee": null,
+      "createdAt": "2025-06-13T00:21:00+08:00",
+      "updatedAt": "2025-06-13T00:25:00+08:00",
+      "startedAt": "2025-06-13T00:21:00+08:00",
+      "completedAt": "2025-06-13T00:25:00+08:00",
+      "implementationNotes": "Created PackageStatus enum, Package entity with state machine (markAsStored, markAsRetrieved), StorageAssignment entity linking package to locker. Entities follow immutable pattern with factory methods (create, reconstitute). All timestamps tracked (createdAt, updatedAt, storedAt, retrievedAt).",
+      "testEvidence": "Unit tests cover: Package creation, state transitions (7 test cases), guards (canBeStored, canBeRetrieved, isCurrentlyStored), reconstitution, and serialization. StorageAssignment tests cover creation, reconstitution, and props. Total: 24 test assertions.",
+      "relatedFiles": [
+        "apps/api/src/modules/packages/domain/enums/PackageStatus.ts",
+        "apps/api/src/modules/packages/domain/entities/Package.ts",
+        "apps/api/src/modules/packages/domain/entities/StorageAssignment.ts",
+        "apps/api/src/modules/packages/domain/entities/Package.test.ts",
+        "apps/api/src/modules/packages/domain/entities/StorageAssignment.test.ts",
+        "apps/api/src/modules/packages/domain/index.ts"
+      ],
+      "commitReferences": []
     }
   ],
   "metadata": {
-    "totalCompleted": 11,
-    "lastUpdated": "2025-06-13T00:03:00+08:00"
+    "totalCompleted": 12,
+    "lastUpdated": "2025-06-13T00:25:00+08:00"
   }
 }
