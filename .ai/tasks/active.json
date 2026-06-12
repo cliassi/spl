@@ -1,39 +1,35 @@
 {
   "task": {
-    "id": "SPL-206",
+    "id": "SPL-207",
     "issueType": "task",
     "epicId": "SPL-E03",
     "parentId": null,
-    "summary": "Package Domain Model",
-    "description": "Implement Package entity, StorageAssignment entity, and domain invariants for package storage lifecycle.",
-    "rationale": "Core domain model for package storage operations. Must enforce one active package per locker invariant.",
+    "summary": "Pickup Code Generation and Hashing",
+    "description": "Implement cryptographically secure pickup code generation and secure hashing for storage.",
+    "rationale": "Pickup codes must be secure (unpredictable) and only stored as hashes for security. Plaintext returned exactly once during storage.",
     "acceptanceCriteria": [
-      "Package entity with reference, size, status (CREATED, STORED, RETRIEVED), timestamps",
-      "StorageAssignment entity linking package to locker with pickupCodeHash",
-      "Domain invariant: one active package per locker maximum",
-      "Package state transitions: CREATED → STORED → RETRIEVED",
-      "Unit tests for entity creation and state transitions"
+      "Pickup code generation with cryptographically secure random values",
+      "Secure hashing using bcrypt or Argon2 (not MD5/SHA1)",
+      "Constant-time hash comparison for verification",
+      "Only hash stored in database, never plaintext",
+      "Plaintext code returned exactly once during storage operation"
     ],
-    "labels": ["domain", "entities", "sprint-3"],
+    "labels": ["security", "cryptography", "sprint-3"],
     "components": ["backend"],
     "priority": "high",
-    "storyPoints": 3,
-    "dependencies": ["SPL-205"],
+    "storyPoints": 2,
+    "dependencies": ["SPL-206"],
     "status": "DONE",
     "assignee": null,
     "createdAt": "2025-06-13T00:21:00+08:00",
-    "updatedAt": "2025-06-13T00:25:00+08:00",
-    "startedAt": "2025-06-13T00:21:00+08:00",
-    "completedAt": "2025-06-13T00:25:00+08:00",
-    "implementationNotes": "Created PackageStatus enum, Package entity with state machine (markAsStored, markAsRetrieved), StorageAssignment entity linking package to locker. Entities follow immutable pattern with factory methods (create, reconstitute). All timestamps tracked (createdAt, updatedAt, storedAt, retrievedAt).",
-    "testEvidence": "Unit tests cover: Package creation, state transitions (7 test cases), guards (canBeStored, canBeRetrieved, isCurrentlyStored), reconstitution, and serialization. StorageAssignment tests cover creation, reconstitution, and props. Total: 24 test assertions.",
+    "updatedAt": "2025-06-13T00:32:00+08:00",
+    "startedAt": "2025-06-13T00:29:00+08:00",
+    "completedAt": "2025-06-13T00:32:00+08:00",
+    "implementationNotes": "Created PickupCodeService using crypto.randomInt for cryptographically secure 6-digit code generation. bcrypt with cost factor 12 for secure hashing. verify() method uses bcrypt.compare() for constant-time comparison. Configurable code length and salt rounds. Plaintext returned only during generation.",
+    "testEvidence": "Unit tests cover: code generation format (6 digits), uniqueness across multiple calls, bcrypt hash format verification, custom length/salt rounds, verification with matching/non-matching codes, security properties (no MD5/SHA1), entropy validation. Total: 12 test assertions.",
     "relatedFiles": [
-      "apps/api/src/modules/packages/domain/enums/PackageStatus.ts",
-      "apps/api/src/modules/packages/domain/entities/Package.ts",
-      "apps/api/src/modules/packages/domain/entities/StorageAssignment.ts",
-      "apps/api/src/modules/packages/domain/entities/Package.test.ts",
-      "apps/api/src/modules/packages/domain/entities/StorageAssignment.test.ts",
-      "apps/api/src/modules/packages/domain/index.ts"
+      "apps/api/src/modules/packages/domain/services/PickupCodeService.ts",
+      "apps/api/src/modules/packages/domain/services/PickupCodeService.test.ts"
     ],
     "commitReferences": []
   }

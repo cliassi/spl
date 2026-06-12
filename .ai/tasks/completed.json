@@ -476,10 +476,44 @@
         "apps/api/src/modules/packages/domain/index.ts"
       ],
       "commitReferences": []
+    },
+    {
+      "id": "SPL-207",
+      "issueType": "task",
+      "epicId": "SPL-E03",
+      "parentId": null,
+      "summary": "Pickup Code Generation and Hashing",
+      "description": "Implement cryptographically secure pickup code generation and secure hashing for storage.",
+      "rationale": "Pickup codes must be secure (unpredictable) and only stored as hashes for security. Plaintext returned exactly once during storage.",
+      "acceptanceCriteria": [
+        "Pickup code generation with cryptographically secure random values",
+        "Secure hashing using bcrypt or Argon2 (not MD5/SHA1)",
+        "Constant-time hash comparison for verification",
+        "Only hash stored in database, never plaintext",
+        "Plaintext code returned exactly once during storage operation"
+      ],
+      "labels": ["security", "cryptography", "sprint-3"],
+      "components": ["backend"],
+      "priority": "high",
+      "storyPoints": 2,
+      "dependencies": ["SPL-206"],
+      "status": "DONE",
+      "assignee": null,
+      "createdAt": "2025-06-13T00:21:00+08:00",
+      "updatedAt": "2025-06-13T00:32:00+08:00",
+      "startedAt": "2025-06-13T00:29:00+08:00",
+      "completedAt": "2025-06-13T00:32:00+08:00",
+      "implementationNotes": "Created PickupCodeService using crypto.randomInt for cryptographically secure 6-digit code generation. bcrypt with cost factor 12 for secure hashing. verify() method uses bcrypt.compare() for constant-time comparison. Configurable code length and salt rounds. Plaintext returned only during generation.",
+      "testEvidence": "Unit tests cover: code generation format (6 digits), uniqueness across multiple calls, bcrypt hash format verification, custom length/salt rounds, verification with matching/non-matching codes, security properties (no MD5/SHA1), entropy validation. Total: 12 test assertions.",
+      "relatedFiles": [
+        "apps/api/src/modules/packages/domain/services/PickupCodeService.ts",
+        "apps/api/src/modules/packages/domain/services/PickupCodeService.test.ts"
+      ],
+      "commitReferences": []
     }
   ],
   "metadata": {
-    "totalCompleted": 12,
-    "lastUpdated": "2025-06-13T00:25:00+08:00"
+    "totalCompleted": 13,
+    "lastUpdated": "2025-06-13T00:32:00+08:00"
   }
 }
