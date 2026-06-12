@@ -1,35 +1,39 @@
 {
   "task": {
-    "id": "SPL-207",
+    "id": "SPL-208",
     "issueType": "task",
     "epicId": "SPL-E03",
     "parentId": null,
-    "summary": "Pickup Code Generation and Hashing",
-    "description": "Implement cryptographically secure pickup code generation and secure hashing for storage.",
-    "rationale": "Pickup codes must be secure (unpredictable) and only stored as hashes for security. Plaintext returned exactly once during storage.",
+    "summary": "Store Package Use Case",
+    "description": "Implement transactional use case for storing packages with allocation policy.",
+    "rationale": "Core business operation: delivery agent stores package, system allocates locker, generates pickup code.",
     "acceptanceCriteria": [
-      "Pickup code generation with cryptographically secure random values",
-      "Secure hashing using bcrypt or Argon2 (not MD5/SHA1)",
-      "Constant-time hash comparison for verification",
-      "Only hash stored in database, never plaintext",
-      "Plaintext code returned exactly once during storage operation"
+      "Use case accepts package reference and size",
+      "Allocation policy selects smallest suitable available locker",
+      "Deterministic selection when multiple lockers same size",
+      "Transactional: package, assignment, and locker status updated atomically",
+      "Returns plaintext pickup code exactly once",
+      "Idempotent handling for duplicate requests"
     ],
-    "labels": ["security", "cryptography", "sprint-3"],
+    "labels": ["use-case", "allocation", "sprint-3"],
     "components": ["backend"],
     "priority": "high",
-    "storyPoints": 2,
-    "dependencies": ["SPL-206"],
+    "storyPoints": 3,
+    "dependencies": ["SPL-207"],
     "status": "DONE",
     "assignee": null,
     "createdAt": "2025-06-13T00:21:00+08:00",
-    "updatedAt": "2025-06-13T00:32:00+08:00",
-    "startedAt": "2025-06-13T00:29:00+08:00",
-    "completedAt": "2025-06-13T00:32:00+08:00",
-    "implementationNotes": "Created PickupCodeService using crypto.randomInt for cryptographically secure 6-digit code generation. bcrypt with cost factor 12 for secure hashing. verify() method uses bcrypt.compare() for constant-time comparison. Configurable code length and salt rounds. Plaintext returned only during generation.",
-    "testEvidence": "Unit tests cover: code generation format (6 digits), uniqueness across multiple calls, bcrypt hash format verification, custom length/salt rounds, verification with matching/non-matching codes, security properties (no MD5/SHA1), entropy validation. Total: 12 test assertions.",
+    "updatedAt": "2025-06-13T00:36:00+08:00",
+    "startedAt": "2025-06-13T00:32:00+08:00",
+    "completedAt": "2025-06-13T00:36:00+08:00",
+    "implementationNotes": "Created PackageRepository and StorageAssignmentRepository ports. Implemented StorePackageUseCase with allocation policy (smallest suitable locker), idempotent duplicate handling, pickup code generation, and comprehensive unit tests. Use case validates locker availability before storage and returns plaintext pickup code exactly once.",
+    "testEvidence": "Unit tests cover: successful storage flow, pickup code generation, package and assignment persistence, duplicate reference handling (idempotent), already stored package error, no suitable locker scenarios, race condition handling, allocation policy verification. Total: 12 test cases.",
     "relatedFiles": [
-      "apps/api/src/modules/packages/domain/services/PickupCodeService.ts",
-      "apps/api/src/modules/packages/domain/services/PickupCodeService.test.ts"
+      "apps/api/src/modules/packages/application/ports/PackageRepository.ts",
+      "apps/api/src/modules/packages/application/ports/StorageAssignmentRepository.ts",
+      "apps/api/src/modules/packages/application/useCases/StorePackageUseCase.ts",
+      "apps/api/src/modules/packages/application/useCases/StorePackageUseCase.test.ts",
+      "apps/api/src/modules/packages/application/index.ts"
     ],
     "commitReferences": []
   }
