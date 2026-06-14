@@ -187,16 +187,25 @@ spl/
 # Unit tests (79 tests)
 cd apps/api && pnpm test:unit
 
-# Key test coverage:
-# - Domain: Entity state transitions, invariants
-# - Use Cases: Success paths, error handling, edge cases
-# - Services: Security properties, charge calculation
+# E2E tests (Playwright)
+cd apps/web && pnpm test:e2e
+
+# E2E with UI mode (for debugging)
+cd apps/web && pnpm test:e2e:ui
 ```
+
+**Test Coverage**:
+
+| Type | Count | Scope |
+|------|-------|-------|
+| Unit Tests | 79 | Domain, use cases, services |
+| E2E Tests | 15+ | Full user flows (store, retrieve, locker inventory) |
 
 **Testing Strategy**:
 - **Unit tests** for domain logic (fast, isolated)
 - **Mocked repositories** for use case tests
-- **No integration tests** (out of scope for interview timeframe)
+- **E2E tests** for critical user flows (Playwright)
+- **Cross-browser testing** (Chrome, Firefox, Safari, Mobile)
 
 ---
 
@@ -207,8 +216,9 @@ cd apps/api && pnpm test:unit
 | Frontend | React, TypeScript, Tailwind CSS, TanStack Query |
 | Backend | Fastify, TypeScript, Zod (validation) |
 | Database | PostgreSQL 16, Drizzle ORM |
-| Testing | Vitest |
+| Testing | Vitest, Playwright |
 | DevOps | Docker, Docker Compose |
+| CI/CD | GitHub Actions |
 | AI Governance | Custom `.ai/` directory structure |
 
 ---
@@ -222,6 +232,7 @@ cd apps/api && pnpm test:unit
 5. **Email Notifications**: Send pickup code via email/SMS on package storage
 6. **Time-Limited Codes**: Expire pickup codes after N days for abandoned packages
 7. **Locker Health Monitoring**: Detect and alert on malfunctioning lockers
+8. **Visual Regression Testing**: Add Playwright screenshot comparisons for UI stability
 8. **API Documentation**: OpenAPI/Swagger spec with interactive docs
 
 ---
