@@ -100,7 +100,7 @@ test.describe('Retrieve Package Flow', () => {
     await page.getByRole('button', { name: 'Retrieve Package' }).click();
     
     // Should show generic error (security: don't reveal if code was ever valid)
-    await expect(page.getByText(/Invalid pickup code or locker code/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/Invalid pickup code or locker code\./)).toBeVisible({ timeout: 10000 });
     
     // Should NOT show specific error like "Package already retrieved"
     await expect(page.getByText(/already retrieved/i)).not.toBeVisible();
@@ -126,7 +126,7 @@ test.describe('Retrieve Package Flow', () => {
     await page.getByRole('button', { name: 'Retrieve Package' }).click();
     
     // Should still show generic error (security)
-    await expect(page.getByText(/Invalid pickup code or locker code/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/Invalid pickup code or locker code\./)).toBeVisible({ timeout: 10000 });
   });
 
   test('should show generic error for non-existent locker', async ({ page }) => {
@@ -135,7 +135,7 @@ test.describe('Retrieve Package Flow', () => {
     await page.getByRole('button', { name: 'Retrieve Package' }).click();
     
     // Should show generic error (security: don't reveal locker doesn't exist)
-    await expect(page.getByText(/Invalid pickup code or locker code/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/Invalid pickup code or locker code\./)).toBeVisible({ timeout: 10000 });
   });
 
   test('should have working "Retrieve Another" button', async ({ page, request }) => {
