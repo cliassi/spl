@@ -827,15 +827,20 @@
       "priority": "high",
       "storyPoints": 3,
       "dependencies": ["SPL-213"],
-      "status": "BACKLOG",
+      "status": "DONE",
       "assignee": null,
       "createdAt": "2025-06-14T22:00:00+08:00",
-      "updatedAt": "2025-06-14T22:00:00+08:00",
-      "startedAt": null,
-      "completedAt": null,
-      "implementationNotes": null,
-      "testEvidence": null,
-      "relatedFiles": [],
+      "updatedAt": "2025-06-14T22:40:00+08:00",
+      "startedAt": "2025-06-14T22:35:00+08:00",
+      "completedAt": "2025-06-14T22:40:00+08:00",
+      "implementationNotes": "Implemented Package Retrieval UI with: (1) retrievePackage API function in packageApi.ts with RetrievePackageRequest/Response types, (2) RetrievePackageForm component with locker code and pickup code inputs, loading state, and generic error handling for security, (3) RetrievePackageSuccess component showing package reference, locker code, storage duration, and charge (with 'FREE' display for zero charges), (4) RetrievePackagePage orchestrating form and success views with 'Retrieve Another' functionality, (5) Security-focused error messages that don't distinguish between wrong code, already retrieved, or non-existent locker.",
+      "testEvidence": "Components created following established patterns from StorePackageForm/Success/Page. All TypeScript types properly defined.",
+      "relatedFiles": [
+        "apps/web/src/api/packageApi.ts",
+        "apps/web/src/components/packages/RetrievePackageForm.tsx",
+        "apps/web/src/components/packages/RetrievePackageSuccess.tsx",
+        "apps/web/src/routes/packages/RetrievePackagePage.tsx"
+      ],
       "commitReferences": []
     }
   ]

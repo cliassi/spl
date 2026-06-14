@@ -1,33 +1,4 @@
 {
-  "task": {
-    "id": "SPL-215",
-    "issueType": "task",
-    "epicId": "SPL-E04",
-    "parentId": null,
-    "summary": "Package Retrieval UI",
-    "description": "Create React form for retrieving packages with charge display.",
-    "rationale": "Recipients need UI to input pickup codes and view charges.",
-    "acceptanceCriteria": [
-      "Route: /packages/retrieval",
-      "Input fields: locker code, pickup code",
-      "Submit button with loading state",
-      "Success view: package reference, storage duration, charge amount (or 'Free')",
-      "Generic error handling: 'Invalid pickup code'"
-    ],
-    "labels": ["ui", "frontend", "sprint-4"],
-    "components": ["frontend"],
-    "priority": "high",
-    "storyPoints": 3,
-    "dependencies": ["SPL-213"],
-    "status": "IN_PROGRESS",
-    "assignee": null,
-    "createdAt": "2025-06-14T22:00:00+08:00",
-    "updatedAt": "2025-06-14T22:35:00+08:00",
-    "startedAt": "2025-06-14T22:35:00+08:00",
-    "completedAt": null,
-    "implementationNotes": null,
-    "testEvidence": null,
-    "relatedFiles": [],
-    "commitReferences": []
-  }
+  "task": null,
+  "note": "Sprint 4 complete - no active task"
 }

@@ -56,3 +56,51 @@ export async function storePackage(request: StorePackageRequest): Promise<StoreP
   
   return response.json();
 }
+
+export interface RetrievePackageRequest {
+  lockerCode: string;
+  pickupCode: string;
+}
+
+export interface StorageCharge {
+  amountMinorUnits: number;
+  currency: string;
+  displayAmount: string;
+}
+
+export interface RetrievePackageResponse {
+  packageId: string;
+  packageReference: string;
+  lockerCode: string;
+  storedAt: string;
+  retrievedAt: string;
+  storageDuration: string;
+  storageCharge: StorageCharge;
+}
+
+export async function retrievePackage(request: RetrievePackageRequest): Promise<RetrievePackageResponse> {
+  const url = `${API_BASE_URL}/api/v1/packages/retrieval`;
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+  
+  if (!response.ok) {
+    const errorData: ApiError = await response.json().catch(() => ({
+      code: 'UNKNOWN_ERROR',
+      message: 'An unexpected error occurred',
+    }));
+    
+    throw new PackageApiError(
+      errorData.message,
+      response.status,
+      errorData.code
+    );
+  }
+  
+  return response.json();
+}
