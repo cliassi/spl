@@ -3,68 +3,86 @@
 ## Current State
 
 - **Sprint**: Sprint 4 — Package Retrieval 🚀 IN_PROGRESS
-- **Active Task**: SPL-211 — Retrieve Package Use Case
-- **Status**: Just started, on feat/SPL-211 branch
-- **Repository State**: Sprint 3 complete, ready for retrieval implementation
-- **Passing Checks**: All tests passing, governance updated
+- **Active Task**: SPL-213 — Package Retrieval API
+- **Status**: On feat/SPL-213 branch, implementing API endpoint
+- **Repository State**: SPL-211 committed, use case ready for API integration
+- **Passing Checks**: All 79 tests passing
 - **Blockers**: None
 
-## 🎉 Sprint 4 — Package Retrieval: 0% → 100%
+## 🎉 Sprint 4 — Package Retrieval: 62% → 100%
 
 | Task | Story Points | Status |
 |------|--------------|--------|
-| **SPL-211** | 3 | 🔄 IN_PROGRESS — Retrieve Package Use Case |
-| SPL-212 | 2 | ⏳ BACKLOG — Pickup Code Verification Service |
-| SPL-213 | 2 | ⏳ BACKLOG — Package Retrieval API |
-| SPL-214 | 3 | ⏳ BACKLOG — Charge Calculation Service |
+| SPL-211 | 3 | ✅ DONE — Retrieve Package Use Case (committed) |
+| SPL-212 | 2 | ✅ DONE — Pickup Code Verification (integrated in SPL-211) |
+| **SPL-213** | 2 | 🔄 **IN_PROGRESS** — Package Retrieval API |
+| SPL-214 | 3 | ✅ DONE — Charge Calculation (integrated in SPL-211) |
 | SPL-215 | 3 | ⏳ BACKLOG — Package Retrieval UI |
 
-**Total**: 13 points | **Completed**: 0/13 points (0%)
+**Total**: 13 points | **Completed**: 8/13 points (62%)
 
 ## Sprint 4 Goal
 
 Enable recipients to retrieve packages using pickup codes, releasing lockers for reuse and calculating storage charges.
 
-## Just Completed — Sprint 3
+## Just Completed — SPL-211
 
-**Package Storage** fully operational:
-- Domain model with state machine
-- Secure pickup code generation
-- Smallest suitable locker allocation
-- Full-stack implementation (API + UI)
+**Retrieve Package Use Case** fully implemented:
+- Clock interface for testable time
+- ChargeCalculationService (24h grace + $5/day)
+- Secure pickup code verification (bcrypt constant-time)
+- Generic error messages for security
+- 13 comprehensive unit tests
 
-## Next Action — SPL-211
+## Next Action — SPL-213
 
-**Retrieve Package Use Case** — Core business logic:
+**Package Retrieval API** — REST endpoint:
 
-1. **Input**: lockerCode, pickupCode
-2. **Verify**: Find active assignment by locker code
-3. **Validate**: Constant-time pickup code verification
-4. **Transition**: Package STORED → RETRIEVED
-5. **Release**: Mark assignment completed, locker available
-6. **Return**: Package details + calculated charges
+**Endpoint**: `POST /api/v1/packages/retrieval`
+
+**Request**:
+```json
+{
+  "lockerCode": "L-M-001",
+  "pickupCode": "123456"
+}
+```
+
+**Response (200 OK)**:
+```json
+{
+  "packageId": "uuid",
+  "packageReference": "PKG-10001",
+  "lockerCode": "L-M-001",
+  "storedAt": "2025-06-12T15:30:00.000Z",
+  "retrievedAt": "2025-06-14T10:15:00.000Z",
+  "storageDuration": "1 day, 18 hours",
+  "storageCharge": {
+    "amountMinorUnits": 500,
+    "currency": "USD",
+    "displayAmount": "$5.00"
+  }
+}
+```
+
+**Error Response (401)**:
+```json
+{
+  "code": "INVALID_PICKUP_CODE",
+  "message": "Invalid pickup code or locker code."
+}
+```
 
 **Files to Create**:
-- `apps/api/src/modules/packages/application/useCases/RetrievePackageUseCase.ts`
-- `apps/api/src/modules/packages/application/useCases/RetrievePackageUseCase.test.ts`
+- `apps/api/src/modules/packages/presentation/schemas/retrievalSchemas.ts` — Zod schemas
+- Update `apps/api/src/modules/packages/presentation/routes/packageRoutes.ts` — Add endpoint
+- Wire in `apps/api/src/server.ts` — Ensure routes registered
 
-**Error Handling**:
-- `INVALID_PICKUP_CODE` — Generic error for all failures (security)
-- `PACKAGE_ALREADY_RETRIEVED` — Terminal state
-- `LOCKER_NOT_FOUND` — Invalid locker code
+## Security Requirements
 
-## Sprint 4 Features
-
-### Backend
-- RetrievePackageUseCase with verification logic
-- ChargeCalculationService (24h grace + $5/day)
-- POST /api/v1/packages/retrieval endpoint
-- Constant-time code verification
-
-### Frontend
-- Retrieval form (locker code + pickup code)
-- Success view with storage duration and charges
-- Generic error handling (no info leakage)
+- Generic `INVALID_PICKUP_CODE` for all failures (no info leakage)
+- Never distinguish between: wrong code, already retrieved, non-existent locker
+- Input validation at API boundary
 
 ## Project Totals
 
@@ -73,14 +91,15 @@ Enable recipients to retrieve packages using pickup codes, releasing lockers for
 | Sprint 1 — Foundation | 10 | ✅ COMPLETE |
 | Sprint 2 — Locker Inventory | 12 | ✅ COMPLETE |
 | Sprint 3 — Package Storage | 13 | ✅ COMPLETE |
-| **Sprint 4 — Package Retrieval** | **13** | 🚀 **IN_PROGRESS** |
-| **Grand Total** | **48** | **73% Complete** |
+| **Sprint 4 — Package Retrieval** | **13** | 🚀 **IN_PROGRESS** (8/13 done) |
+| **Grand Total** | **48** | **79% After Sprint 4** |
 
 ## Resume Protocol
 
 When the user says "continue":
 1. Read this file (`.ai/NEXT.md`).
 2. Read active task from `.ai/tasks/active.json`.
-3. Create RetrievePackageUseCase with verification logic.
-4. Add unit tests for all scenarios.
-5. Update governance records.
+3. Create retrieval Zod schemas with validation.
+4. Add POST /api/v1/packages/retrieval endpoint.
+5. Wire routes in server.ts.
+6. Update governance records.

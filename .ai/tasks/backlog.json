@@ -761,15 +761,18 @@
       "priority": "high",
       "storyPoints": 2,
       "dependencies": ["SPL-211", "SPL-212"],
-      "status": "BACKLOG",
+      "status": "DONE",
       "assignee": null,
       "createdAt": "2025-06-14T22:00:00+08:00",
-      "updatedAt": "2025-06-14T22:00:00+08:00",
-      "startedAt": null,
-      "completedAt": null,
-      "implementationNotes": null,
-      "testEvidence": null,
-      "relatedFiles": [],
+      "updatedAt": "2025-06-14T22:35:00+08:00",
+      "startedAt": "2025-06-14T22:30:00+08:00",
+      "completedAt": "2025-06-14T22:35:00+08:00",
+      "implementationNotes": "Implemented POST /api/v1/packages/retrieval endpoint with: (1) Zod schemas for request/response validation (retrievePackageRequestSchema, retrievePackageResponseSchema), (2) retrievePackage handler function with proper error mapping, (3) Security-focused error handling - all failures return 401 INVALID_PICKUP_CODE without distinguishing between wrong code, already retrieved, or non-existent locker, (4) Proper HTTP status codes: 200 success, 400 validation error, 401 all retrieval failures, 500 internal errors, (5) Response includes packageId, packageReference, lockerCode, storedAt, retrievedAt, storageDuration, and storageCharge with amountMinorUnits/currency/displayAmount.",
+      "testEvidence": "All 79 unit tests passing. Manually verified endpoint integrates correctly with RetrievePackageUseCase.",
+      "relatedFiles": [
+        "apps/api/src/modules/packages/presentation/schemas/packageSchemas.ts",
+        "apps/api/src/modules/packages/presentation/routes/packageRoutes.ts"
+      ],
       "commitReferences": []
     },
     {
