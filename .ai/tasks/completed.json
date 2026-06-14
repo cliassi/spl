@@ -548,10 +548,85 @@
         "apps/api/src/modules/packages/application/index.ts"
       ],
       "commitReferences": []
+    },
+    {
+      "id": "SPL-209",
+      "issueType": "task",
+      "epicId": "SPL-E03",
+      "parentId": null,
+      "summary": "Package Storage API",
+      "description": "Implement POST /api/v1/packages endpoint for storing packages.",
+      "rationale": "API endpoint for delivery agents to store packages in lockers.",
+      "acceptanceCriteria": [
+        "POST /api/v1/packages endpoint implemented",
+        "Request body: reference, size (SMALL, MEDIUM, LARGE)",
+        "Response includes: packageId, lockerCode, pickupCode (plaintext, once only)",
+        "Error handling: no suitable locker available, invalid size",
+        "409 Conflict for duplicate package reference"
+      ],
+      "labels": ["api", "presentation", "sprint-3"],
+      "components": ["backend"],
+      "priority": "high",
+      "storyPoints": 2,
+      "dependencies": ["SPL-208"],
+      "status": "DONE",
+      "assignee": null,
+      "createdAt": "2025-06-13T00:21:00+08:00",
+      "updatedAt": "2025-06-13T00:39:00+08:00",
+      "startedAt": "2025-06-13T00:36:00+08:00",
+      "completedAt": "2025-06-13T00:39:00+08:00",
+      "implementationNotes": "Created Zod schemas for request/response validation (packageSchemas.ts). Implemented POST /api/v1/packages endpoint (packageRoutes.ts) with StorePackageUseCase integration. Created PostgreSQL repository implementations (PackageRepositoryPostgres, StorageAssignmentRepositoryPostgres). Wired up routes in server.ts. Error mapping: 400 validation, 409 duplicate, 422 no locker, 500 storage failure.",
+      "testEvidence": "API endpoint accepts reference and size, returns packageId/lockerCode/pickupCode on success. Comprehensive error handling with appropriate HTTP status codes. Schemas validated with Zod.",
+      "relatedFiles": [
+        "apps/api/src/modules/packages/presentation/schemas/packageSchemas.ts",
+        "apps/api/src/modules/packages/presentation/routes/packageRoutes.ts",
+        "apps/api/src/modules/packages/infrastructure/repositories/PackageRepositoryPostgres.ts",
+        "apps/api/src/modules/packages/infrastructure/repositories/StorageAssignmentRepositoryPostgres.ts",
+        "apps/api/src/modules/packages/infrastructure/index.ts",
+        "apps/api/src/server.ts"
+      ],
+      "commitReferences": []
+    },
+    {
+      "id": "SPL-210",
+      "issueType": "task",
+      "epicId": "SPL-E03",
+      "parentId": null,
+      "summary": "Package Storage UI",
+      "description": "Create React form for storing packages and displaying pickup code.",
+      "rationale": "Delivery agents need UI to input package details and receive pickup code.",
+      "acceptanceCriteria": [
+        "Storage form at /packages/store route (or modal)",
+        "Input fields: package reference, size selection",
+        "Submit button with loading state",
+        "Success view showing locker code and pickup code prominently",
+        "Warning that pickup code is shown only once",
+        "Error handling: no lockers available, validation errors"
+      ],
+      "labels": ["ui", "frontend", "sprint-3"],
+      "components": ["frontend"],
+      "priority": "high",
+      "storyPoints": 3,
+      "dependencies": ["SPL-209"],
+      "status": "DONE",
+      "assignee": null,
+      "createdAt": "2025-06-13T00:21:00+08:00",
+      "updatedAt": "2025-06-13T00:43:00+08:00",
+      "startedAt": "2025-06-13T00:40:00+08:00",
+      "completedAt": "2025-06-13T00:43:00+08:00",
+      "implementationNotes": "Created packageApi.ts with storePackage function and error handling. Implemented StorePackageForm component with reference input, size radio buttons, loading state, and error display. Created StorePackageSuccess component with prominent pickup code display and warning message. Built StorePackagePage to orchestrate form and success views. All components styled with Tailwind CSS.",
+      "testEvidence": "UI components complete with form validation, loading states, error handling for 400/409/422/500 errors, and success view with prominent pickup code display and warning.",
+      "relatedFiles": [
+        "apps/web/src/api/packageApi.ts",
+        "apps/web/src/components/packages/StorePackageForm.tsx",
+        "apps/web/src/components/packages/StorePackageSuccess.tsx",
+        "apps/web/src/routes/packages/StorePackagePage.tsx"
+      ],
+      "commitReferences": []
     }
   ],
   "metadata": {
-    "totalCompleted": 14,
-    "lastUpdated": "2025-06-13T00:36:00+08:00"
+    "totalCompleted": 16,
+    "lastUpdated": "2025-06-13T00:43:00+08:00"
   }
 }

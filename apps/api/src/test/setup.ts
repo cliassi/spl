@@ -58,15 +58,7 @@ export async function beforeEach() {
 
 // Seed minimal test data for each test
 async function seedTestData() {
-  const testLockers = [
-    { code: 'L-S-001', size: 'SMALL' },
-    { code: 'L-S-002', size: 'SMALL' },
-    { code: 'L-M-001', size: 'MEDIUM' },
-    { code: 'L-L-001', size: 'LARGE' },
-  ];
-  
-  // Use drizzle-kit seed or direct insert
-  // For simplicity, we'll assume the seed.ts file handles this
+  // Use the shared seed function from seed.ts
   try {
     const { seed } = await import('../infrastructure/database/seeds/seed.js');
     await seed();
@@ -75,5 +67,4 @@ async function seedTestData() {
   }
 }
 
-// Export for Vitest
-export { setup, teardown, beforeEach };
+// Vitest uses the named exports above automatically

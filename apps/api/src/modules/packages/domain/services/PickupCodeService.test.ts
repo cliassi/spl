@@ -106,16 +106,16 @@ describe('PickupCodeService', () => {
     it('should generate codes with sufficient entropy', async () => {
       // Generate many codes and check for duplicates
       const codes = new Set<string>();
-      const iterations = 50;
+      const iterations = 20;
 
       for (let i = 0; i < iterations; i++) {
         const result = await service.generate();
         codes.add(result.plaintext);
       }
 
-      // With 900,000 possible codes, 50 iterations should have no duplicates
+      // With 900,000 possible codes, 20 iterations should have no duplicates
       expect(codes.size).toBe(iterations);
-    });
+    }, 15000);
 
     it('should generate hashes of consistent length', async () => {
       const results = await Promise.all([

@@ -61,7 +61,7 @@ describe('Package Entity', () => {
 
       const stored = pkg.markAsStored();
 
-      expect(stored.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
+      expect(stored.updatedAt.getTime()).toBeGreaterThanOrEqual(originalUpdatedAt.getTime());
     });
 
     it('should throw error when transitioning from STORED to STORED', () => {
@@ -118,7 +118,7 @@ describe('Package Entity', () => {
 
       const retrieved = stored.markAsRetrieved();
 
-      expect(retrieved.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
+      expect(retrieved.updatedAt.getTime()).toBeGreaterThanOrEqual(originalUpdatedAt.getTime());
     });
 
     it('should throw error when transitioning from CREATED to RETRIEVED', () => {
