@@ -27,9 +27,6 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')` */
     baseURL: process.env.WEB_URL || 'http://localhost:5173',
     
-    /* API URL for backend requests */
-    apiBaseURL: process.env.API_URL || 'http://localhost:3000',
-    
     /* Collect trace when retrying the failed test */
     trace: 'on-first-retry',
     
@@ -65,25 +62,15 @@ export default defineConfig({
     },
   ],
 
-  /* Run local dev server before starting the tests */
-  webServer: [
-    {
-      command: 'docker-compose up -d postgres',
-      url: 'http://localhost:5432',
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
-    },
-    {
-      command: 'cd ../api && pnpm dev',
-      url: 'http://localhost:3000/health',
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
-    },
-    {
-      command: 'pnpm dev',
-      url: 'http://localhost:5173',
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
-    },
-  ],
+  /* 
+   * Note: E2E tests require services to be running manually or via docker-compose
+   * 
+   * To run tests locally:
+   * 1. Start services: docker-compose up -d postgres
+   * 2. Start API: cd ../api && pnpm dev
+   * 3. Start Web: pnpm dev
+   * 4. Run tests: pnpm test:e2e
+   * 
+   * For CI, use the GitHub Actions workflow which handles service orchestration.
+   */
 });

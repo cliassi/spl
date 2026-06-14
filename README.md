@@ -183,14 +183,31 @@ spl/
 
 ## Testing
 
+### Unit Tests
+
 ```bash
 # Unit tests (79 tests)
 cd apps/api && pnpm test:unit
+```
 
-# E2E tests (Playwright)
+### E2E Tests (Playwright)
+
+E2E tests require services to be running. **Three terminal windows needed**:
+
+```bash
+# Terminal 1: Start PostgreSQL
+docker-compose up -d postgres
+
+# Terminal 2: Start API
+cd apps/api && pnpm dev
+
+# Terminal 3: Start Web (if not already running)
+cd apps/web && pnpm dev
+
+# Terminal 4: Run E2E tests
 cd apps/web && pnpm test:e2e
 
-# E2E with UI mode (for debugging)
+# Or with UI mode for debugging
 cd apps/web && pnpm test:e2e:ui
 ```
 
