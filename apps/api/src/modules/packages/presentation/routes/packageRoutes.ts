@@ -13,7 +13,6 @@ import { randomUUID } from 'crypto';
 import {
   storePackageRequestSchema,
   storePackageResponseSchema,
-  packageErrorResponseSchema,
   retrievePackageRequestSchema,
   retrievePackageResponseSchema,
 } from '../schemas/packageSchemas.js';
