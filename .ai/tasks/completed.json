@@ -586,10 +586,47 @@
         "apps/api/src/server.ts"
       ],
       "commitReferences": []
+    },
+    {
+      "id": "SPL-210",
+      "issueType": "task",
+      "epicId": "SPL-E03",
+      "parentId": null,
+      "summary": "Package Storage UI",
+      "description": "Create React form for storing packages and displaying pickup code.",
+      "rationale": "Delivery agents need UI to input package details and receive pickup code.",
+      "acceptanceCriteria": [
+        "Storage form at /packages/store route (or modal)",
+        "Input fields: package reference, size selection",
+        "Submit button with loading state",
+        "Success view showing locker code and pickup code prominently",
+        "Warning that pickup code is shown only once",
+        "Error handling: no lockers available, validation errors"
+      ],
+      "labels": ["ui", "frontend", "sprint-3"],
+      "components": ["frontend"],
+      "priority": "high",
+      "storyPoints": 3,
+      "dependencies": ["SPL-209"],
+      "status": "DONE",
+      "assignee": null,
+      "createdAt": "2025-06-13T00:21:00+08:00",
+      "updatedAt": "2025-06-13T00:43:00+08:00",
+      "startedAt": "2025-06-13T00:40:00+08:00",
+      "completedAt": "2025-06-13T00:43:00+08:00",
+      "implementationNotes": "Created packageApi.ts with storePackage function and error handling. Implemented StorePackageForm component with reference input, size radio buttons, loading state, and error display. Created StorePackageSuccess component with prominent pickup code display and warning message. Built StorePackagePage to orchestrate form and success views. All components styled with Tailwind CSS.",
+      "testEvidence": "UI components complete with form validation, loading states, error handling for 400/409/422/500 errors, and success view with prominent pickup code display and warning.",
+      "relatedFiles": [
+        "apps/web/src/api/packageApi.ts",
+        "apps/web/src/components/packages/StorePackageForm.tsx",
+        "apps/web/src/components/packages/StorePackageSuccess.tsx",
+        "apps/web/src/routes/packages/StorePackagePage.tsx"
+      ],
+      "commitReferences": []
     }
   ],
   "metadata": {
-    "totalCompleted": 15,
-    "lastUpdated": "2025-06-13T00:39:00+08:00"
+    "totalCompleted": 16,
+    "lastUpdated": "2025-06-13T00:43:00+08:00"
   }
 }

@@ -5,7 +5,7 @@ import { lockers } from '../schema.js';
 const connectionString = process.env.DATABASE_URL || 
   'postgres://spl:spl_password@localhost:5432/smart_package_locker';
 
-async function seed() {
+export async function seed() {
   const client = postgres(connectionString);
   const db = drizzle(client);
 
@@ -45,12 +45,15 @@ async function seed() {
   }
 }
 
-seed()
-  .then(() => {
-    console.log('Seeding completed successfully');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('Seeding failed:', error);
-    process.exit(1);
-  });
+// Run seed only when executed directly (CLI), not when imported
+if (import.meta.url === `file://${process.argv[1]}`) {
+  seed()
+    .then(() => {
+      console.log('Seeding completed successfully');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('Seeding failed:', error);
+      process.exit(1);
+    });
+}
