@@ -11,16 +11,32 @@ vi.mock('nodemailer', () => ({
   },
 }));
 
+// Mock fs to prevent smtp file detection
+vi.mock('fs', () => ({
+  default: {
+    existsSync: vi.fn(() => false),
+    readFileSync: vi.fn(),
+  },
+  existsSync: vi.fn(() => false),
+  readFileSync: vi.fn(),
+}));
+
 describe('EmailService', () => {
   let emailService: EmailService;
+  const originalEnv = process.env;
 
   beforeEach(() => {
-    // Reset mocks and create fresh instance
+    // Reset mocks and clear environment
     vi.clearAllMocks();
+    process.env = { ...originalEnv };
+    delete process.env.SMTP_USER;
+    delete process.env.SMTP_PASS;
+    delete process.env.SMTP_HOST;
     emailService = new EmailService();
   });
 
   afterEach(() => {
+    process.env = originalEnv;
     vi.restoreAllMocks();
   });
 
@@ -52,13 +68,16 @@ describe('EmailService', () => {
 
   describe('send', () => {
     it('should return failure when email is not configured', async () => {
+      // Create fresh instance without credentials
+      const serviceWithoutCreds = new EmailService();
+      
       const message: EmailMessage = {
         to: 'test@example.com',
         subject: 'Test',
         text: 'Test message',
       };
 
-      const result = await emailService.send(message);
+      const result = await serviceWithoutCreds.send(message);
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('Email service not configured');
