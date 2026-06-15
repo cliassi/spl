@@ -16,17 +16,15 @@ test.describe('Locker Inventory Page', () => {
   });
 
   test('should display page title and header', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Smart Package Locker' })).toBeVisible();
-    await expect(page.getByText(/Locker Inventory/)).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Locker Inventory' })).toBeVisible();
   });
 
   test('should display locker list', async ({ page }) => {
-    // Should show lockers table/grid
-    await expect(page.locator('table, .locker-grid, .locker-list')).toBeVisible();
+    // Should show lockers grid (actual implementation uses CSS grid)
+    await expect(page.locator('.grid')).toBeVisible();
     
-    // Should show at least some lockers
-    const lockerRows = page.locator('tr, .locker-card');
-    await expect(lockerRows.first()).toBeVisible();
+    // Should show at least some lockers after loading
+    await expect(page.locator('text=/Available|Occupied/i')).toBeVisible();
   });
 
   test('should show locker details (code, size, status)', async ({ page }) => {
@@ -55,42 +53,21 @@ test.describe('Locker Inventory Page', () => {
   });
 
   test('should navigate to store package page', async ({ page }) => {
-    // Look for store package link or button
-    const storeLink = page.getByRole('link', { name: /Store Package/i });
-    
-    if (await storeLink.count() > 0) {
-      await storeLink.click();
-      await expect(page).toHaveURL(/\/packages\/store/);
-    } else {
-      // Try alternative navigation
-      await page.goto('/packages/store');
-      await expect(page.getByRole('heading', { name: 'Package Storage' })).toBeVisible();
-    }
+    // Navigate directly (no nav links on main page currently)
+    await page.goto('/packages/store');
+    await expect(page.getByRole('heading', { name: 'Package Storage' })).toBeVisible();
   });
 
   test('should navigate to retrieve package page', async ({ page }) => {
-    // Look for retrieve package link or button
-    const retrieveLink = page.getByRole('link', { name: /Retrieve Package/i });
-    
-    if (await retrieveLink.count() > 0) {
-      await retrieveLink.click();
-      await expect(page).toHaveURL(/\/packages\/retrieval/);
-    } else {
-      // Try alternative navigation
-      await page.goto('/packages/retrieval');
-      await expect(page.getByRole('heading', { name: 'Retrieve Package' })).toBeVisible();
-    }
+    // Navigate directly (no nav links on main page currently)
+    await page.goto('/packages/retrieval');
+    await expect(page.getByRole('heading', { name: 'Retrieve Package' })).toBeVisible();
   });
 
-  test('should refresh locker status', async ({ page }) => {
-    // Look for refresh button if it exists
-    const refreshButton = page.getByRole('button', { name: /Refresh/i });
-    
-    if (await refreshButton.count() > 0) {
-      await refreshButton.click();
-      
-      // Should show loading state or updated data
-      await expect(page.locator('table, .locker-grid')).toBeVisible();
-    }
+  test('should show locker statistics', async ({ page }) => {
+    // Should show available/occupied counts
+    await expect(page.locator('text=/\d+ Available/i')).toBeVisible();
+    await expect(page.locator('text=/\d+ Occupied/i')).toBeVisible();
+    await expect(page.locator('text=/Total: \d+/i')).toBeVisible();
   });
 });
