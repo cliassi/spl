@@ -1,5 +1,5 @@
 // Integration tests for locker API routes
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { buildServer } from '../../../../server.js';
 import { db } from '../../../../infrastructure/database/connection.js';
 import { storageAssignments, packages } from '../../../../infrastructure/database/schema.js';

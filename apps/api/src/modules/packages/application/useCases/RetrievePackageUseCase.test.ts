@@ -151,10 +151,11 @@ describe('RetrievePackageUseCase', () => {
 
       expect(result.success).toBe(true);
       expect(savedPackage).not.toBeNull();
-      if (result.success && savedPackage) {
-        expect(savedPackage.status).toBe('RETRIEVED');
-        expect(savedPackage.retrievedAt).toBeDefined();
-      }
+      
+      // Type assertion needed because TypeScript can't track assignment through mock closure
+      const pkg = savedPackage as unknown as Package;
+      expect(pkg.status).toBe('RETRIEVED');
+      expect(pkg.retrievedAt).toBeDefined();
     });
   });
 

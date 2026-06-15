@@ -379,6 +379,59 @@ docker exec spl-postgres-1 psql -U spl -d smart_package_locker \
 - [ ] Inventory: Display shows correct counts
 - [ ] Validation: Empty/malformed inputs rejected
 - [ ] Edge cases: Concurrent, special chars handled
+- [ ] Email notifications: Storage confirmation sent
+- [ ] Email notifications: Retrieval confirmation sent
+
+---
+
+## Test Case 13: Email Notifications
+
+**Objective:** Verify email notifications are sent for storage and retrieval events.
+
+### Prerequisites:
+- SMTP credentials configured (via environment variables or `smtp` file)
+
+### Steps:
+
+#### Test 13A: Verify Email Configuration
+```bash
+curl http://localhost:3000/api/v1/notifications/verify
+```
+**Expected:** `{"configured":true,"smtp":{"host":"...","port":465}}`
+
+#### Test 13B: Send Test Verification Email
+```bash
+curl -X POST http://localhost:3000/api/v1/notifications/verify-email \
+  -H "Content-Type: application/json" \
+  -d '{"to":"your-email@example.com"}'
+```
+**Expected:** `{"success":true,"message":"Verification email sent..."}`
+Check inbox for subject: "Smart Package Locker - Email Verification"
+
+#### Test 13C: Send Storage Notification
+```bash
+curl -X POST http://localhost:3000/api/v1/notifications/test \
+  -H "Content-Type: application/json" \
+  -d '{"to":"your-email@example.com","type":"storage"}'
+```
+**Expected:** Email with pickup code, locker code, and instructions
+
+#### Test 13D: Send Retrieval Notification
+```bash
+curl -X POST http://localhost:3000/api/v1/notifications/test \
+  -H "Content-Type: application/json" \
+  -d '{"to":"your-email@example.com","type":"retrieval"}'
+```
+**Expected:** Email with retrieval confirmation and storage duration
+
+### Environment Variables:
+```bash
+export SMTP_HOST=mail.cogent.space
+export SMTP_PORT=465
+export SMTP_USER=spl@cogent.space
+export SMTP_PASS='your-password'
+export SMTP_FROM=spl@cogent.space
+```
 
 ---
 
