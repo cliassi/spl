@@ -46,8 +46,8 @@ test.describe('Store Package Flow', () => {
     await expect(page.getByText('Package Stored Successfully!')).toBeVisible({ timeout: 10000 });
     
     // Verify success view content - locker code and pickup code are displayed
-    await expect(page.getByText(/Locker Code/i)).toBeVisible();
-    await expect(page.getByText(/Pickup Code/i)).toBeVisible();
+    await expect(page.getByText('Locker Code', { exact: true })).toBeVisible();
+    await expect(page.getByText('Pickup Code', { exact: true })).toBeVisible();
     
     // Verify locker code pattern (L-S-XXX, L-M-XXX, or L-L-XXX) appears somewhere on page
     const pageContent = await page.textContent('body');
