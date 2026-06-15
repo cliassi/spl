@@ -2,8 +2,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { LockerRepositoryPostgres } from './LockerRepositoryPostgres.js';
 import { Size } from '../../domain/valueObjects/Size.js';
-import { db } from '../../../infrastructure/database/connection.js';
-import { lockers, storageAssignments, packages } from '../../../infrastructure/database/schema.js';
+import { db } from '../../../../infrastructure/database/connection.js';
+import { lockers, storageAssignments, packages } from '../../../../infrastructure/database/schema.js';
 
 // Test subject
 const repository = new LockerRepositoryPostgres();
