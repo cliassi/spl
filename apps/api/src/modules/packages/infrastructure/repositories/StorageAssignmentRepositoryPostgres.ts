@@ -10,22 +10,19 @@ import { eq, and } from 'drizzle-orm';
 
 export class StorageAssignmentRepositoryPostgres implements StorageAssignmentRepository {
   async findAll(filters?: StorageAssignmentFilters): Promise<StorageAssignment[]> {
-    let query = db.select().from(assignmentsTable);
-
-    if (filters) {
-      const conditions = [];
-      if (filters.packageId) {
-        conditions.push(eq(assignmentsTable.packageId, filters.packageId));
-      }
-      if (filters.lockerId) {
-        conditions.push(eq(assignmentsTable.lockerId, filters.lockerId));
-      }
-      if (conditions.length > 0) {
-        query = query.where(and(...conditions));
-      }
+    const conditions = [];
+    
+    if (filters?.packageId) {
+      conditions.push(eq(assignmentsTable.packageId, filters.packageId));
+    }
+    if (filters?.lockerId) {
+      conditions.push(eq(assignmentsTable.lockerId, filters.lockerId));
     }
 
-    const rows = await query;
+    const rows = conditions.length > 0
+      ? await db.select().from(assignmentsTable).where(and(...conditions))
+      : await db.select().from(assignmentsTable);
+      
     return rows.map((row) => this.toEntity(row));
   }
 
