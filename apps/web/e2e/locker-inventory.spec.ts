@@ -23,8 +23,8 @@ test.describe('Locker Inventory Page', () => {
     // Should show lockers grid (actual implementation uses CSS grid)
     await expect(page.locator('.grid')).toBeVisible();
     
-    // Should show at least some lockers after loading
-    await expect(page.locator('text=/Available|Occupied/i')).toBeVisible();
+    // Should show at least some lockers after loading ("10 Available" format)
+    await expect(page.getByText(/Available/i).first()).toBeVisible();
   });
 
   test('should show locker details (code, size, status)', async ({ page }) => {
@@ -65,9 +65,9 @@ test.describe('Locker Inventory Page', () => {
   });
 
   test('should show locker statistics', async ({ page }) => {
-    // Should show available/occupied counts
-    await expect(page.locator('text=/\d+ Available/i')).toBeVisible();
-    await expect(page.locator('text=/\d+ Occupied/i')).toBeVisible();
-    await expect(page.locator('text=/Total: \d+/i')).toBeVisible();
+    // Should show available/occupied counts (e.g., "10 Available", "0 Occupied")
+    await expect(page.getByText(/\d+ Available/i)).toBeVisible();
+    await expect(page.getByText(/\d+ Occupied/i)).toBeVisible();
+    await expect(page.getByText(/Total: \d+/i)).toBeVisible();
   });
 });
