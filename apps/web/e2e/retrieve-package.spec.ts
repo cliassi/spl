@@ -67,6 +67,8 @@ test.describe('Retrieve Package Flow', () => {
     const reference = `RETRIEVE-${Date.now()}`;
     const { lockerCode, pickupCode } = await storePackageViaAPI(request, reference, 'SMALL');
     
+    console.log(`DEBUG: Stored package with locker=${lockerCode}, pickup=${pickupCode}`);
+    
     // Navigate to retrieval page
     await page.goto('/packages/retrieval');
     
