@@ -1,32 +1,4 @@
 {
-  "task": {
-    "id": "SPL-212",
-    "issueType": "task",
-    "epicId": "SPL-E04",
-    "parentId": null,
-    "summary": "Pickup Code Verification Service",
-    "description": "Extract and enhance pickup code verification with constant-time comparison.",
-    "rationale": "Secure verification is critical to prevent timing attacks and information leakage.",
-    "acceptanceCriteria": [
-      "Constant-time code comparison",
-      "Generic error messages for all failures",
-      "Unit tests for verification edge cases",
-      "Security-focused implementation"
-    ],
-    "labels": ["service", "security", "sprint-4"],
-    "components": ["backend"],
-    "priority": "high",
-    "storyPoints": 2,
-    "dependencies": ["SPL-207"],
-    "status": "IN_PROGRESS",
-    "assignee": null,
-    "createdAt": "2025-06-14T22:00:00+08:00",
-    "updatedAt": "2025-06-14T22:05:00+08:00",
-    "startedAt": "2025-06-14T22:05:00+08:00",
-    "completedAt": null,
-    "implementationNotes": null,
-    "testEvidence": null,
-    "relatedFiles": [],
-    "commitReferences": []
-  }
+  "task": null,
+  "note": "Sprint 4 complete - no active task"
 }

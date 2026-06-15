@@ -4,8 +4,8 @@ import {
   StorageAssignmentFilters,
 } from '../../application/ports/StorageAssignmentRepository.js';
 import { StorageAssignment, StorageAssignmentProps } from '../../domain/entities/StorageAssignment.js';
-import { db } from '../../../infrastructure/database/connection.js';
-import { storageAssignments as assignmentsTable } from '../../../infrastructure/database/schema.js';
+import { db } from '../../../../infrastructure/database/connection.js';
+import { storageAssignments as assignmentsTable } from '../../../../infrastructure/database/schema.js';
 import { eq, and } from 'drizzle-orm';
 
 export class StorageAssignmentRepositoryPostgres implements StorageAssignmentRepository {

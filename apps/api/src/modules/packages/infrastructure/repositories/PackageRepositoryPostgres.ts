@@ -2,8 +2,8 @@
 import { PackageRepository, PackageFilters } from '../../application/ports/PackageRepository.js';
 import { Package, PackageProps } from '../../domain/entities/Package.js';
 import { PackageStatus } from '../../domain/enums/PackageStatus.js';
-import { db } from '../../../infrastructure/database/connection.js';
-import { packages as packagesTable } from '../../../infrastructure/database/schema.js';
+import { db } from '../../../../infrastructure/database/connection.js';
+import { packages as packagesTable } from '../../../../infrastructure/database/schema.js';
 import { eq, and, like } from 'drizzle-orm';
 import { Size } from '../../../lockers/domain/valueObjects/Size.js';
 
