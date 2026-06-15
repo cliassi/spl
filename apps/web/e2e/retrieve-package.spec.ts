@@ -1,4 +1,5 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
+import { execSync } from 'child_process';
 
 /**
  * E2E Tests for Package Retrieval Flow
@@ -17,7 +18,7 @@ async function storePackageViaAPI(
   reference: string,
   size: 'SMALL' | 'MEDIUM' | 'LARGE'
 ): Promise<{ lockerCode: string; pickupCode: string }> {
-  const response = await apiContext.post('/api/v1/packages', {
+  const response = await apiContext.post('http://localhost:3000/api/v1/packages', {
     data: { reference, size },
   });
   
@@ -34,6 +35,18 @@ test.describe('Retrieve Package Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the retrieve package page
     await page.goto('/packages/retrieval');
+  });
+
+  test.afterEach(() => {
+    // Clean up to free lockers for next test
+    try {
+      execSync(
+        'docker exec spl-postgres-1 psql -U spl -d smart_package_locker -c "TRUNCATE TABLE storage_assignments, packages RESTART IDENTITY CASCADE;"',
+        { stdio: 'pipe', timeout: 5000 }
+      );
+    } catch {
+      // Ignore cleanup errors
+    }
   });
 
   test('should display retrieve package form', async ({ page }) => {

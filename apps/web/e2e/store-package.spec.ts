@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { execSync } from 'child_process';
 
 /**
  * E2E Tests for Package Storage Flow
@@ -14,6 +15,18 @@ test.describe('Store Package Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the store package page
     await page.goto('/packages/store');
+  });
+
+  test.afterEach(() => {
+    // Clean up storage assignments to free lockers for next test
+    try {
+      execSync(
+        'docker exec spl-postgres-1 psql -U spl -d smart_package_locker -c "TRUNCATE TABLE storage_assignments, packages RESTART IDENTITY CASCADE;"',
+        { stdio: 'pipe', timeout: 5000 }
+      );
+    } catch {
+      // Ignore cleanup errors
+    }
   });
 
   test('should display store package form', async ({ page }) => {
@@ -109,8 +122,8 @@ test.describe('Store Package Flow', () => {
     await page.getByLabel('SMALL').check();
     await page.getByRole('button', { name: 'Store Package' }).click();
     
-    // Should show duplicate error (API returns "Package reference already exists.")
-    await expect(page.getByText(/already exists/i)).toBeVisible({ timeout: 10000 });
+    // Should show duplicate error (API returns "already stored")
+    await expect(page.getByText(/already stored/i)).toBeVisible({ timeout: 10000 });
   });
 
   test('should have working navigation back to locker inventory', async ({ page }) => {
