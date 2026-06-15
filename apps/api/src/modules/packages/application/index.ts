@@ -8,3 +8,11 @@ export {
   type StorePackageError,
   type StorePackageOutput,
 } from './useCases/StorePackageUseCase.js';
+export {
+  RetrievePackageUseCase,
+  type RetrievePackageInput,
+  type RetrievePackageSuccess,
+  type RetrievePackageError,
+  type RetrievePackageOutput,
+  type RetrievedPackageInfo,
+} from './useCases/RetrievePackageUseCase.js';
