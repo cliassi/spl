@@ -4,6 +4,7 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import { lockerRoutes } from './modules/lockers/presentation/routes/lockerRoutes.js';
 import { packageRoutes } from './modules/packages/presentation/routes/packageRoutes.js';
+import { notificationRoutes } from './modules/notifications/presentation/routes/notificationRoutes.js';
 
 // Create Fastify instance
 export function buildServer() {
@@ -31,6 +32,7 @@ export function buildServer() {
   // API routes
   app.register(lockerRoutes, { prefix: '/api/v1/lockers' });
   app.register(packageRoutes, { prefix: '/api/v1/packages' });
+  app.register(notificationRoutes, { prefix: '/api/v1' });
 
   // Error handler
   app.setErrorHandler((error, request, reply) => {
