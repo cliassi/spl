@@ -80,13 +80,14 @@ test.describe('Store Package Flow', () => {
     await expect(page.getByText('Package Stored Successfully!')).toBeVisible({ timeout: 10000 });
   });
 
-  test('should show validation error for empty reference', async ({ page }) => {
-    // Try to submit without filling reference
-    await page.getByRole('button', { name: 'Store Package' }).click();
+  test('should disable submit button for empty reference', async ({ page }) => {
+    // Verify button is disabled when reference is empty
+    const submitButton = page.getByRole('button', { name: 'Store Package' });
+    await expect(submitButton).toBeDisabled();
     
-    // Form should prevent submission (HTML5 validation)
-    // Check we're still on the form page
-    await expect(page.getByLabel('Package Reference')).toBeVisible();
+    // After filling reference, button should be enabled
+    await page.getByLabel('Package Reference').fill('TEST-REF');
+    await expect(submitButton).toBeEnabled();
   });
 
   test('should show error for duplicate package reference', async ({ page }) => {
