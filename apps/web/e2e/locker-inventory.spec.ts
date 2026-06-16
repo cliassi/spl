@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test';
  * 1. Display locker list with codes and sizes
  * 2. Filter by size
  * 3. Show availability status
- * 4. Navigate to store package
+ * 4. Navigate to store package via header nav
  */
 
 test.describe('Locker Inventory Page', () => {
@@ -20,54 +20,54 @@ test.describe('Locker Inventory Page', () => {
   });
 
   test('should display locker list', async ({ page }) => {
-    // Should show lockers grid (actual implementation uses CSS grid)
+    // Should show lockers grid
     await expect(page.locator('.grid')).toBeVisible();
     
-    // Should show at least some lockers after loading ("10 Available" format)
-    await expect(page.getByText(/Available/i).first()).toBeVisible();
+    // Should show availability stats after loading
+    await expect(page.getByText(/available/i).first()).toBeVisible();
   });
 
   test('should show locker details (code, size, status)', async ({ page }) => {
-    // Look for locker code pattern in the page
-    await expect(page.locator('text=/L-[SML]-\\d{3}/')).toBeVisible();
+    // Wait for grid to load
+    await expect(page.locator('.grid')).toBeVisible({ timeout: 10000 });
     
-    // Look for size indicators
-    await expect(page.locator('text=/(SMALL|MEDIUM|LARGE)/i').first()).toBeVisible();
+    // Look for locker code pattern
+    await expect(page.getByText(/L-S-\d{3}/).first()).toBeVisible();
     
     // Look for availability indicators
-    await expect(page.locator('text=/(Available|Occupied|In Use)/i').first()).toBeVisible();
+    await expect(page.getByText(/Free|In Use/).first()).toBeVisible();
   });
 
   test('should have working filter by size', async ({ page }) => {
-    // Find and use size filter if it exists
-    const sizeFilter = page.locator('select, button:has-text("Size"), [data-testid="size-filter"]');
+    // Use the size filter select
+    const sizeFilter = page.locator('#size-filter');
+    await sizeFilter.selectOption('SMALL');
     
-    if (await sizeFilter.count() > 0) {
-      await sizeFilter.click();
-      await page.getByText('SMALL').click();
-      
-      // Should only show small lockers
-      const lockerCodes = await page.locator('text=/L-S-\\d{3}/').count();
-      expect(lockerCodes).toBeGreaterThan(0);
-    }
+    // Wait for filter to take effect
+    await page.waitForTimeout(500);
+    
+    // Should only show small lockers
+    const lockerCodes = await page.locator('text=/L-S-\\d{3}/').count();
+    expect(lockerCodes).toBeGreaterThan(0);
+    
+    // Should not show other sizes
+    const otherCodes = await page.locator('text=/L-[ML]-\\d{3}/').count();
+    expect(otherCodes).toBe(0);
   });
 
-  test('should navigate to store package page', async ({ page }) => {
-    // Navigate directly (no nav links on main page currently)
-    await page.goto('/packages/store');
-    await expect(page.getByRole('heading', { name: 'Package Storage' })).toBeVisible();
+  test('should navigate to store package page via nav', async ({ page }) => {
+    await page.getByRole('link', { name: /Store/ }).click();
+    await expect(page.getByRole('heading', { name: 'Store a Package' })).toBeVisible();
   });
 
-  test('should navigate to retrieve package page', async ({ page }) => {
-    // Navigate directly (no nav links on main page currently)
-    await page.goto('/packages/retrieval');
+  test('should navigate to retrieve package page via nav', async ({ page }) => {
+    await page.getByRole('link', { name: /Retrieve/ }).click();
     await expect(page.getByRole('heading', { name: 'Retrieve Package' })).toBeVisible();
   });
 
   test('should show locker statistics', async ({ page }) => {
-    // Should show available/occupied counts (e.g., "10 Available", "0 Occupied")
-    await expect(page.getByText(/\d+ Available/i)).toBeVisible();
-    await expect(page.getByText(/\d+ Occupied/i)).toBeVisible();
-    await expect(page.getByText(/Total: \d+/i)).toBeVisible();
+    // Should show available/occupied counts
+    await expect(page.getByText(/\d+ available/)).toBeVisible();
+    await expect(page.getByText(/\d+ occupied/)).toBeVisible();
   });
 });

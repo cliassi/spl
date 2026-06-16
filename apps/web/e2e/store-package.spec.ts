@@ -31,7 +31,7 @@ test.describe('Store Package Flow', () => {
 
   test('should display store package form', async ({ page }) => {
     // Verify page title
-    await expect(page.getByRole('heading', { name: 'Package Storage' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Store a Package' })).toBeVisible();
     
     // Verify form elements
     await expect(page.getByLabel('Package Reference')).toBeVisible();
@@ -39,9 +39,9 @@ test.describe('Store Package Flow', () => {
     await expect(page.getByRole('button', { name: 'Store Package' })).toBeVisible();
     
     // Verify size options
-    await expect(page.getByLabel('SMALL')).toBeVisible();
-    await expect(page.getByLabel('MEDIUM')).toBeVisible();
-    await expect(page.getByLabel('LARGE')).toBeVisible();
+    await expect(page.getByText('Small', { exact: true })).toBeVisible();
+    await expect(page.getByText('Medium', { exact: true })).toBeVisible();
+    await expect(page.getByText('Large', { exact: true })).toBeVisible();
   });
 
   test('should successfully store a small package', async ({ page }) => {
@@ -50,16 +50,16 @@ test.describe('Store Package Flow', () => {
     
     // Fill in form
     await page.getByLabel('Package Reference').fill(reference);
-    await page.getByLabel('SMALL').check();
+    await page.getByText('Small', { exact: true }).click();
     
     // Submit form
     await page.getByRole('button', { name: 'Store Package' }).click();
     
     // Wait for success view
-    await expect(page.getByText('Package Stored Successfully!')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Package Stored!')).toBeVisible({ timeout: 10000 });
     
     // Verify success view content - locker code and pickup code are displayed
-    await expect(page.getByText('Locker Code', { exact: true })).toBeVisible();
+    await expect(page.getByText('Assigned Locker')).toBeVisible();
     await expect(page.getByText('Pickup Code', { exact: true })).toBeVisible();
     
     // Verify locker code pattern (L-S-XXX, L-M-XXX, or L-L-XXX) appears somewhere on page
@@ -70,27 +70,27 @@ test.describe('Store Package Flow', () => {
     expect(pageContent).toMatch(/\d{6}/);
     
     // Verify warning message about saving pickup code
-    await expect(page.getByText(/Save your pickup code/)).toBeVisible();
+    await expect(page.getByText(/Save this code now/)).toBeVisible();
   });
 
   test('should successfully store a medium package', async ({ page }) => {
     const reference = `TEST-MEDIUM-${Date.now()}`;
     
     await page.getByLabel('Package Reference').fill(reference);
-    await page.getByLabel('MEDIUM').check();
+    await page.getByText('Medium', { exact: true }).click();
     await page.getByRole('button', { name: 'Store Package' }).click();
     
-    await expect(page.getByText('Package Stored Successfully!')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Package Stored!')).toBeVisible({ timeout: 10000 });
   });
 
   test('should successfully store a large package', async ({ page }) => {
     const reference = `TEST-LARGE-${Date.now()}`;
     
     await page.getByLabel('Package Reference').fill(reference);
-    await page.getByLabel('LARGE').check();
+    await page.getByText('Large', { exact: true }).click();
     await page.getByRole('button', { name: 'Store Package' }).click();
     
-    await expect(page.getByText('Package Stored Successfully!')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Package Stored!')).toBeVisible({ timeout: 10000 });
   });
 
   test('should disable submit button for empty reference', async ({ page }) => {
@@ -108,27 +108,27 @@ test.describe('Store Package Flow', () => {
     
     // Store first package
     await page.getByLabel('Package Reference').fill(reference);
-    await page.getByLabel('SMALL').check();
+    await page.getByText('Small', { exact: true }).click();
     await page.getByRole('button', { name: 'Store Package' }).click();
     
     // Wait for success
-    await expect(page.getByText('Package Stored Successfully!')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Package Stored!')).toBeVisible({ timeout: 10000 });
     
     // Navigate back to store another
     await page.getByRole('button', { name: 'Store Another Package' }).click();
     
     // Try to store same reference again
     await page.getByLabel('Package Reference').fill(reference);
-    await page.getByLabel('SMALL').check();
+    await page.getByText('Small', { exact: true }).click();
     await page.getByRole('button', { name: 'Store Package' }).click();
     
-    // Should show duplicate error (API returns "already stored")
-    await expect(page.getByText(/already stored/i)).toBeVisible({ timeout: 10000 });
+    // Should show duplicate error
+    await expect(page.getByText(/already|duplicate|exists/i)).toBeVisible({ timeout: 10000 });
   });
 
   test('should have working navigation back to locker inventory', async ({ page }) => {
-    // Navigate directly to home (no back link in current UI)
-    await page.goto('/');
+    // Use nav link to go home
+    await page.getByRole('link', { name: /Lockers/ }).click();
     await expect(page.getByRole('heading', { name: 'Locker Inventory' })).toBeVisible();
   });
 });
