@@ -49,7 +49,7 @@ describe('RetrievePackageUseCase', () => {
     // Setup mocks with default successful paths
     packageRepo = {
       findById: async () => testPackage,
-      save: async () => {},
+      update: async () => {},
     } as unknown as PackageRepository;
 
     assignmentRepo = {
@@ -131,7 +131,7 @@ describe('RetrievePackageUseCase', () => {
 
       packageRepo = {
         ...packageRepo,
-        save: async (pkg: Package) => {
+        update: async (pkg: Package) => {
           savedPackage = pkg;
         },
       } as unknown as PackageRepository;
