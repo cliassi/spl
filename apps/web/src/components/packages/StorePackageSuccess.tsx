@@ -1,4 +1,5 @@
 import React from 'react';
+import { CheckCircle2, AlertTriangle, Copy } from 'lucide-react';
 
 interface StorePackageSuccessProps {
   lockerCode: string;
@@ -11,74 +12,72 @@ export const StorePackageSuccess: React.FC<StorePackageSuccessProps> = ({
   pickupCode,
   onStoreAnother,
 }) => {
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-          <svg
-            className="w-8 h-8 text-green-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold text-gray-800">Package Stored Successfully!</h2>
+    <div className="card">
+      {/* Success Header */}
+      <div className="px-6 py-5 bg-emerald-50 border-b border-emerald-100 text-center">
+        <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+        <h2 className="text-xl font-bold text-gray-900">Package Stored!</h2>
+        <p className="text-sm text-gray-600 mt-1">Your package has been assigned to a locker</p>
       </div>
 
-      <div className="space-y-6">
+      <div className="p-6 space-y-5">
         {/* Locker Code */}
-        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <p className="text-sm text-blue-600 font-medium mb-1">Locker Code</p>
-          <p className="text-3xl font-bold text-blue-800 tracking-wider">{lockerCode}</p>
-          <p className="text-sm text-blue-600 mt-1">Place package in this locker</p>
+        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Assigned Locker</p>
+          <div className="flex items-center justify-between">
+            <p className="text-2xl font-bold text-gray-900 tracking-wide">{lockerCode}</p>
+            <button
+              onClick={() => copyToClipboard(lockerCode)}
+              className="p-1.5 text-gray-400 hover:text-gray-600 rounded"
+              title="Copy"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">Place the package in this locker</p>
         </div>
 
-        {/* Pickup Code - Most Important */}
-        <div className="p-6 bg-amber-50 rounded-lg border-2 border-amber-300">
-          <p className="text-sm text-amber-700 font-medium mb-2">Pickup Code</p>
-          <p className="text-5xl font-bold text-amber-800 tracking-widest text-center py-4">
-            {pickupCode}
-          </p>
+        {/* Pickup Code - Critical */}
+        <div className="p-5 bg-amber-50 rounded-lg border-2 border-amber-200">
+          <p className="text-xs font-medium text-amber-700 uppercase tracking-wide mb-2">Pickup Code</p>
+          <div className="flex items-center justify-between">
+            <p className="text-4xl font-bold text-amber-900 tracking-widest font-mono">
+              {pickupCode}
+            </p>
+            <button
+              onClick={() => copyToClipboard(pickupCode)}
+              className="p-2 text-amber-600 hover:text-amber-800 hover:bg-amber-100 rounded-lg transition-colors"
+              title="Copy"
+            >
+              <Copy className="w-5 h-5" />
+            </button>
+          </div>
           
-          <div className="mt-4 p-3 bg-amber-100 rounded border border-amber-300">
-            <p className="text-amber-800 text-sm font-semibold flex items-center">
-              <svg
-                className="w-5 h-5 mr-2 flex-shrink-0"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Save your pickup code - it will not be shown again!
+          <div className="mt-4 flex items-start gap-2 p-3 bg-amber-100/60 rounded-lg">
+            <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+            <p className="text-xs font-medium text-amber-800">
+              Save this code now — it will not be shown again!
             </p>
           </div>
         </div>
 
         {/* Instructions */}
-        <div className="text-sm text-gray-600 space-y-2">
-          <p>1. Place the package in locker <strong>{lockerCode}</strong></p>
-          <p>2. Close the locker door securely</p>
-          <p>3. Give the pickup code <strong>{pickupCode}</strong> to the recipient</p>
+        <div className="space-y-2.5 text-sm text-gray-600">
+          <p className="font-medium text-gray-700 text-xs uppercase tracking-wide">Next Steps</p>
+          <ol className="list-decimal list-inside space-y-1.5 text-sm">
+            <li>Place the package in locker <strong className="text-gray-900">{lockerCode}</strong></li>
+            <li>Close the locker door securely</li>
+            <li>Give the pickup code <strong className="text-gray-900">{pickupCode}</strong> to the recipient</li>
+          </ol>
         </div>
 
-        {/* Store Another Button */}
-        <button
-          onClick={onStoreAnother}
-          className="w-full py-2 px-4 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-        >
+        {/* Store Another */}
+        <button onClick={onStoreAnother} className="btn-secondary w-full">
           Store Another Package
         </button>
       </div>

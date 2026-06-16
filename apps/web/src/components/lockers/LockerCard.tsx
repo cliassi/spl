@@ -1,46 +1,54 @@
 // LockerCard component - displays individual locker information
+import { Lock, Unlock } from 'lucide-react';
 import type { Locker } from '../../api/lockerApi.js';
 
 interface LockerCardProps {
   locker: Locker;
 }
 
+const sizeConfig = {
+  SMALL: { label: 'S', color: 'bg-sky-100 text-sky-700 border-sky-200' },
+  MEDIUM: { label: 'M', color: 'bg-amber-100 text-amber-700 border-amber-200' },
+  LARGE: { label: 'L', color: 'bg-violet-100 text-violet-700 border-violet-200' },
+};
+
 export function LockerCard({ locker }: LockerCardProps) {
-  const sizeColors = {
-    SMALL: 'bg-blue-100 text-blue-800',
-    MEDIUM: 'bg-green-100 text-green-800',
-    LARGE: 'bg-purple-100 text-purple-800',
-  };
+  const size = sizeConfig[locker.size];
 
   return (
     <div
-      className={`p-4 rounded-lg border-2 ${
+      className={`relative p-4 rounded-xl border transition-all duration-200 ${
         locker.isAvailable
-          ? 'border-green-400 bg-green-50'
-          : 'border-gray-300 bg-gray-100'
+          ? 'border-gray-200 bg-white hover:border-indigo-300 hover:shadow-md'
+          : 'border-gray-200 bg-gray-50 opacity-75'
       }`}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-2xl font-bold text-gray-800">
-            {locker.code}
-          </span>
-          <span
-            className={`px-2 py-1 rounded text-sm font-medium ${
-              sizeColors[locker.size]
-            }`}
+          <div
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center text-sm font-bold ${size.color}`}
           >
-            {locker.size}
-          </span>
+            {size.label}
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900">{locker.code}</p>
+            <p className="text-xs text-gray-500">{locker.size.toLowerCase()}</p>
+          </div>
         </div>
+
         <div
-          className={`px-3 py-1 rounded-full text-sm font-medium ${
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
             locker.isAvailable
-              ? 'bg-green-500 text-white'
-              : 'bg-red-500 text-white'
+              ? 'bg-emerald-50 text-emerald-700'
+              : 'bg-red-50 text-red-600'
           }`}
         >
-          {locker.isAvailable ? 'Available' : 'Occupied'}
+          {locker.isAvailable ? (
+            <Unlock className="w-3 h-3" />
+          ) : (
+            <Lock className="w-3 h-3" />
+          )}
+          {locker.isAvailable ? 'Free' : 'In Use'}
         </div>
       </div>
     </div>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<!-- saved from url=(0106)file:///Users/nesar/Documents/Codex/2026-06-15/how-much-avocado-intake-is-good/outputs/storage-locker.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storage Locker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 18vw 32px 6vw;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at top, #f7f9fb 0, #dfe5ea 44%, #b7c0c7 100%);
+      font-family: Arial, sans-serif;
+    }
+
+    .locker {
+      position: relative;
+      width: min(68vw, 560px);
+      aspect-ratio: 3 / 4.6;
+      padding: 14px 16px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 6px;
+      background: linear-gradient(90deg, #a6adb2, #d5d9dc 8%, #eef0f1 50%, #b1b7bc);
+      border: 5px solid #aab0b4;
+      border-bottom-width: 11px;
+      box-shadow:
+        0 26px 45px rgba(31, 39, 45, 0.3),
+        inset 0 0 0 2px rgba(255, 255, 255, 0.42),
+        inset 0 -18px 25px rgba(97, 103, 108, 0.22);
+    }
+
+    .locker::before,
+    .locker::after {
+      content: "";
+      position: absolute;
+      top: 12px;
+      bottom: 18px;
+      width: 4px;
+      background: linear-gradient(#8c9398, #f2f3f4 48%, #7b8388);
+      box-shadow: 0 0 0 1px rgba(45, 52, 57, 0.24);
+      z-index: 2;
+    }
+
+    .locker::before {
+      left: calc(33.333% + 5px);
+    }
+
+    .locker::after {
+      left: calc(66.666% + 2px);
+    }
+
+    .door,
+    .open-bay {
+      position: relative;
+      min-width: 0;
+      background:
+        linear-gradient(115deg, rgba(255, 255, 255, 0.6), transparent 28%),
+        linear-gradient(#e5e8ea, #c6ccd0);
+      border: 2px solid #8f969b;
+      box-shadow:
+        inset 3px 0 5px rgba(255, 255, 255, 0.52),
+        inset -5px -6px 9px rgba(76, 84, 91, 0.18);
+    }
+
+    .door::before {
+      content: "";
+      position: absolute;
+      top: 16%;
+      left: 50%;
+      width: 34%;
+      height: 18px;
+      transform: translateX(-50%);
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          #a6adb2 0 2px,
+          transparent 2px 6px
+        );
+      opacity: 0.85;
+      filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.75));
+    }
+
+    .door::after {
+      content: "";
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      width: 24%;
+      height: 12px;
+      transform: translateX(-50%);
+      border-top: 2px solid #c8cdd0;
+      border-left: 2px solid #c8cdd0;
+      border-right: 2px solid #f5f6f7;
+      border-radius: 50% 50% 0 0;
+      opacity: 0.9;
+    }
+
+    .handle {
+      position: absolute;
+      left: 10px;
+      top: 44%;
+      width: 17px;
+      height: 48px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, #15191b, #31383d 45%, #0d0f10);
+      border-radius: 2px;
+      box-shadow:
+        1px 1px 0 rgba(255, 255, 255, 0.45),
+        0 3px 6px rgba(0, 0, 0, 0.28);
+    }
+
+    .handle::after {
+      content: "";
+      position: absolute;
+      right: 3px;
+      bottom: 7px;
+      width: 5px;
+      height: 10px;
+      border-radius: 4px;
+      background: #b8c0c5;
+    }
+
+    .open-bay {
+      overflow: visible;
+      background:
+        linear-gradient(145deg, rgba(15, 25, 27, 0.55), transparent 45%),
+        linear-gradient(#233134, #6e7776 48%, #dde1df);
+      border-color: #747c80;
+      box-shadow:
+        inset 0 18px 28px rgba(0, 0, 0, 0.52),
+        inset 20px 0 26px rgba(9, 16, 17, 0.38),
+        inset -5px -7px 12px rgba(255, 255, 255, 0.22);
+      z-index: 4;
+    }
+
+    .open-bay .open-door {
+      position: absolute;
+      top: -2px;
+      left: 100%;
+      width: 82%;
+      height: 100%;
+      transform: perspective(700px) rotateY(-24deg);
+      transform-origin: left center;
+      background:
+        linear-gradient(100deg, rgba(255, 255, 255, 0.7), transparent 30%),
+        linear-gradient(#edf0f1, #c7cdd0);
+      border: 2px solid #8b9296;
+      box-shadow:
+        14px 10px 20px rgba(28, 34, 38, 0.26),
+        inset 6px 0 10px rgba(255, 255, 255, 0.52),
+        inset -7px -7px 11px rgba(72, 80, 88, 0.16);
+    }
+
+    .open-bay .open-door::before {
+      content: "";
+      position: absolute;
+      top: 24%;
+      right: 27%;
+      width: 38%;
+      height: 18px;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          #9fa7ac 0 2px,
+          transparent 2px 6px
+        );
+    }
+
+    .open-bay .open-door::after {
+      content: "";
+      position: absolute;
+      right: 8px;
+      top: 46%;
+      width: 16px;
+      height: 45px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, #111516, #343b40);
+      border-radius: 2px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .open-bay .hinge {
+      position: absolute;
+      right: -6px;
+      width: 6px;
+      height: 24px;
+      background: #7d8589;
+      box-shadow: inset 1px 0 rgba(255, 255, 255, 0.45);
+    }
+
+    .open-bay .hinge.top {
+      top: 16px;
+    }
+
+    .open-bay .hinge.bottom {
+      bottom: 16px;
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 20px 18vw 20px 4vw;
+      }
+
+      .locker {
+        width: 70vw;
+        gap: 4px;
+        padding: 10px 11px 17px;
+      }
+
+      .handle {
+        left: 6px;
+        width: 12px;
+        height: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="locker" aria-label="Storage locker with one door open">
+    <section class="door"><span class="handle"></span></section>
+    <section class="door"><span class="handle"></span></section>
+    <section class="open-bay">
+      <span class="hinge top"></span>
+      <span class="hinge bottom"></span>
+      <span class="open-door"></span>
+    </section>
+
+    <section class="door"><span class="handle"></span></section>
+    <section class="door"><span class="handle"></span></section>
+    <section class="door"><span class="handle"></span></section>
+
+    <section class="door"><span class="handle"></span></section>
+    <section class="door"><span class="handle"></span></section>
+    <section class="door"><span class="handle"></span></section>
+
+    <section class="door"><span class="handle"></span></section>
+    <section class="door"><span class="handle"></span></section>
+    <section class="door"><span class="handle"></span></section>
+
+    <section class="door"><span class="handle"></span></section>
+    <section class="door"><span class="handle"></span></section>
+    <section class="door"><span class="handle"></span></section>
+  </main>
+
+
+</body></html>
