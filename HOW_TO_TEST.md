@@ -1,19 +1,70 @@
-# Manual Testing Guide
+# Testing Guide
 
-This document provides step-by-step manual test cases for the Smart Package Locker system.
+This document covers automated and manual testing for the Smart Package Locker system.
 
 ## Prerequisites
 
-- API server running on `http://localhost:3000`
-- Web app running on `http://localhost:5173`
-- PostgreSQL database with seeded lockers
+```bash
+# Start all services
+docker-compose up -d
+
+# Run migrations (first time or after volume reset)
+cat apps/api/src/infrastructure/database/migrations/0000_many_iron_lad.sql | \
+  sed 's/--> statement-breakpoint//g' | \
+  docker exec -i spl-postgres-1 psql -U spl -d smart_package_locker
+
+cat apps/api/src/infrastructure/database/migrations/0001_concurrent_request_protection.sql | \
+  sed 's/--> statement-breakpoint//g' | \
+  docker exec -i spl-postgres-1 psql -U spl -d smart_package_locker
+
+# Seed lockers
+docker exec spl-api-1 pnpm --filter api db:seed
+```
+
+Verify services are healthy:
+
+| Service | URL | Check |
+|---------|-----|-------|
+| API | `http://localhost:3000/health` | `{"status":"ok"}` |
+| Web | `http://localhost:5173` | Locker Inventory page |
+| DB | `docker exec spl-postgres-1 psql -U spl -d smart_package_locker -c '\dt'` | 3 tables |
+
+---
+
+## Automated E2E Tests (Playwright)
+
+22 tests covering all user flows. Run against Chromium:
+
+```bash
+cd apps/web
+npx playwright test --project=chromium
+```
+
+Run with UI / headed mode:
+```bash
+npx playwright test --project=chromium --headed
+npx playwright test --project=chromium --ui
+```
+
+View last report:
+```bash
+npx playwright show-report
+```
+
+### Test Coverage
+
+| Suite | Tests | Covers |
+|-------|-------|--------|
+| `locker-inventory.spec.ts` | 7 | Page display, locker details, size filter, nav, statistics |
+| `store-package.spec.ts` | 8 | Form display, store S/M/L, validation, duplicate error, nav |
+| `retrieve-package.spec.ts` | 7 | Form display, retrieval, FREE charge, invalid codes, re-retrieval |
+
+---
 
 ## Quick Health Check
 
 ```bash
-# Test API health
 curl http://localhost:3000/health
-
 # Expected: {"status":"ok","timestamp":"..."}
 ```
 
@@ -26,14 +77,15 @@ curl http://localhost:3000/health
 ### Steps:
 1. Open browser to `http://localhost:5173/packages/store`
 2. Enter package reference: `PKG-001`
-3. Select size: **SMALL**
+3. Select size: **Small**
 4. Click **"Store Package"**
 
 ### Expected Results:
-- Success message: "Package Stored Successfully!"
-- Locker code displayed (format: `L-S-XXX`)
-- 6-digit pickup code displayed (e.g., `123456`)
-- Warning: "Save your pickup code - it will not be shown again!"
+- Success message: "Package Stored!"
+- Assigned Locker displayed (format: `L-S-XXX`) with copy button
+- 6-digit Pickup Code displayed with copy button
+- Warning: "Save this code now — it will not be shown again!"
+- "Next Steps" instructions shown
 
 ### API Verification:
 ```bash
@@ -223,8 +275,8 @@ docker exec spl-postgres-1 psql -U spl -d smart_package_locker \
 3. Retrieve the package
 
 ### Expected Results:
-- Storage charge: **$2.00** (2 days × $1/day after 24h grace period)
-- Display: "$2.00" or "2.00 USD"
+- Storage charge calculated (rate: $5.00/day after 24h grace period)
+- Charge displayed in the "Charge" tile
 
 ---
 
@@ -257,7 +309,7 @@ docker exec spl-postgres-1 psql -U spl -d smart_package_locker \
 - All lockers displayed in grid
 - Each locker shows: code, size, status
 - Available lockers marked differently from occupied
-- Statistics shown: "X Available, Y Occupied, Total: Z"
+- Statistics: dot indicators with "X available" / "Y occupied"
 
 ---
 
@@ -440,5 +492,8 @@ export SMTP_FROM=spl@cogent.space
 - **Pickup codes** are 6-digit numbers (100000-999999)
 - **Locker codes** follow pattern: `L-{S|M|L}-{001-999}`
 - **Grace period** is 24 hours (no charge)
-- **Daily charge** is $1.00 after grace period
+- **Daily charge** is $5.00 after grace period
 - **Security** principle: Never reveal if locker exists, package exists, or which part of code is wrong
+- **Navigation**: Header nav bar with Lockers, Store, and Retrieve links
+- **Icons**: Lucide React icons throughout the UI
+- **Styling**: Tailwind CSS v4 with `@tailwindcss/postcss`
