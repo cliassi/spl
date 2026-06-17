@@ -1,4 +1,5 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
+import { execSync } from 'child_process';
 
 /**
  * E2E Tests for Package Retrieval Flow
@@ -17,7 +18,7 @@ async function storePackageViaAPI(
   reference: string,
   size: 'SMALL' | 'MEDIUM' | 'LARGE'
 ): Promise<{ lockerCode: string; pickupCode: string }> {
-  const response = await apiContext.post('/api/v1/packages', {
+  const response = await apiContext.post('http://localhost:3000/api/v1/packages', {
     data: { reference, size },
   });
   
@@ -36,6 +37,18 @@ test.describe('Retrieve Package Flow', () => {
     await page.goto('/packages/retrieval');
   });
 
+  test.afterEach(() => {
+    // Clean up to free lockers for next test
+    try {
+      execSync(
+        'docker exec spl-postgres-1 psql -U spl -d smart_package_locker -c "TRUNCATE TABLE storage_assignments, packages RESTART IDENTITY CASCADE;"',
+        { stdio: 'pipe', timeout: 5000 }
+      );
+    } catch {
+      // Ignore cleanup errors
+    }
+  });
+
   test('should display retrieve package form', async ({ page }) => {
     // Verify page title
     await expect(page.getByRole('heading', { name: 'Retrieve Package' })).toBeVisible();
@@ -46,7 +59,7 @@ test.describe('Retrieve Package Flow', () => {
     await expect(page.getByRole('button', { name: 'Retrieve Package' })).toBeVisible();
     
     // Verify helper text
-    await expect(page.getByText(/Enter your locker code and pickup code/)).toBeVisible();
+    await expect(page.getByText(/Enter your codes/)).toBeVisible();
   });
 
   test('should successfully retrieve a package', async ({ page, request }) => {
@@ -68,14 +81,11 @@ test.describe('Retrieve Package Flow', () => {
     await expect(page.getByText('Package Retrieved!')).toBeVisible({ timeout: 10000 });
     
     // Verify success view content
-    await expect(page.getByText(/Package Reference:/)).toBeVisible();
+    await expect(page.getByText('Reference', { exact: true })).toBeVisible();
     await expect(page.getByText(reference)).toBeVisible();
-    await expect(page.getByText(/Locker:/)).toBeVisible();
-    await expect(page.getByText(/Storage Duration:/)).toBeVisible();
-    await expect(page.getByText(/Storage Charge:/)).toBeVisible();
-    
-    // Verify retrieved timestamp is shown
-    await expect(page.getByText(/Retrieved at:/)).toBeVisible();
+    await expect(page.getByText('Locker', { exact: true })).toBeVisible();
+    await expect(page.getByText('Duration', { exact: true })).toBeVisible();
+    await expect(page.getByText('Charge', { exact: true })).toBeVisible();
   });
 
   test('should show FREE for packages within grace period', async ({ page, request }) => {
@@ -90,7 +100,7 @@ test.describe('Retrieve Package Flow', () => {
     
     // Should show FREE for immediate retrieval (within 24h grace period)
     await expect(page.getByText('Package Retrieved!')).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(/FREE|\\$0\.00/)).toBeVisible();
+    await expect(page.getByText('FREE', { exact: true })).toBeVisible();
   });
 
   test('should show generic error for invalid pickup code', async ({ page }) => {
@@ -170,8 +180,8 @@ test.describe('Retrieve Package Flow', () => {
     await page.getByRole('button', { name: 'Retrieve Package' }).click();
     await expect(page.getByText('Package Retrieved!')).toBeVisible({ timeout: 10000 });
     
-    // Click "Done" button
-    await page.getByRole('button', { name: 'Done' }).click();
+    // Click "Done" link
+    await page.getByRole('link', { name: 'Done' }).click();
     
     // Should navigate to home
     await expect(page).toHaveURL('/');

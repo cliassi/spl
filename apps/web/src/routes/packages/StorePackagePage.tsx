@@ -20,31 +20,16 @@ export const StorePackagePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-          Package Storage
-        </h1>
-
-        {storedResult ? (
-          <StorePackageSuccess
-            lockerCode={storedResult.lockerCode}
-            pickupCode={storedResult.pickupCode}
-            onStoreAnother={handleStoreAnother}
-          />
-        ) : (
-          <StorePackageForm onSuccess={handleSuccess} />
-        )}
-
-        <div className="mt-8 text-center">
-          <a
-            href="/"
-            className="text-blue-600 hover:text-blue-800 text-sm"
-          >
-            ← Back to Locker Inventory
-          </a>
-        </div>
-      </div>
+    <div className="max-w-lg mx-auto">
+      {storedResult ? (
+        <StorePackageSuccess
+          lockerCode={storedResult.lockerCode}
+          pickupCode={storedResult.pickupCode}
+          onStoreAnother={handleStoreAnother}
+        />
+      ) : (
+        <StorePackageForm onSuccess={handleSuccess} />
+      )}
     </div>
   );
 };

@@ -49,7 +49,7 @@ describe('RetrievePackageUseCase', () => {
     // Setup mocks with default successful paths
     packageRepo = {
       findById: async () => testPackage,
-      save: async () => {},
+      update: async () => {},
     } as unknown as PackageRepository;
 
     assignmentRepo = {
@@ -131,7 +131,7 @@ describe('RetrievePackageUseCase', () => {
 
       packageRepo = {
         ...packageRepo,
-        save: async (pkg: Package) => {
+        update: async (pkg: Package) => {
           savedPackage = pkg;
         },
       } as unknown as PackageRepository;
@@ -151,10 +151,11 @@ describe('RetrievePackageUseCase', () => {
 
       expect(result.success).toBe(true);
       expect(savedPackage).not.toBeNull();
-      if (result.success && savedPackage) {
-        expect(savedPackage.status).toBe('RETRIEVED');
-        expect(savedPackage.retrievedAt).toBeDefined();
-      }
+      
+      // Type assertion needed because TypeScript can't track assignment through mock closure
+      const pkg = savedPackage as unknown as Package;
+      expect(pkg.status).toBe('RETRIEVED');
+      expect(pkg.retrievedAt).toBeDefined();
     });
   });
 

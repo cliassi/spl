@@ -1,4 +1,6 @@
 import React from 'react';
+import { CheckCircle2, Clock, DollarSign, Tag, LayoutGrid } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { RetrievePackageResponse } from '../../api/packageApi.js';
 
 interface RetrievePackageSuccessProps {
@@ -13,70 +15,67 @@ export const RetrievePackageSuccess: React.FC<RetrievePackageSuccessProps> = ({
   const isFree = result.storageCharge.amountMinorUnits === 0;
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <div className="text-center mb-6">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-          <svg
-            className="w-8 h-8 text-green-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold text-gray-800">Package Retrieved!</h2>
-        <p className="text-gray-600 mt-1">Your package has been successfully retrieved.</p>
+    <div className="card">
+      {/* Success Header */}
+      <div className="px-6 py-5 bg-emerald-50 border-b border-emerald-100 text-center">
+        <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+        <h2 className="text-xl font-bold text-gray-900">Package Retrieved!</h2>
+        <p className="text-sm text-gray-600 mt-1">Your package is ready for collection</p>
       </div>
 
-      <div className="space-y-4 mb-6">
-        <div className="bg-gray-50 p-4 rounded-md">
-          <p className="text-sm text-gray-600 mb-1">Package Reference</p>
-          <p className="text-lg font-semibold text-gray-800">{result.packageReference}</p>
-        </div>
+      <div className="p-6 space-y-4">
+        {/* Details Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Tag className="w-3 h-3 text-gray-400" />
+              <p className="text-xs text-gray-500">Reference</p>
+            </div>
+            <p className="text-sm font-semibold text-gray-900">{result.packageReference}</p>
+          </div>
 
-        <div className="bg-gray-50 p-4 rounded-md">
-          <p className="text-sm text-gray-600 mb-1">Locker</p>
-          <p className="text-lg font-semibold text-gray-800">{result.lockerCode}</p>
-        </div>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-1.5 mb-1">
+              <LayoutGrid className="w-3 h-3 text-gray-400" />
+              <p className="text-xs text-gray-500">Locker</p>
+            </div>
+            <p className="text-sm font-semibold text-gray-900">{result.lockerCode}</p>
+          </div>
 
-        <div className="bg-gray-50 p-4 rounded-md">
-          <p className="text-sm text-gray-600 mb-1">Storage Duration</p>
-          <p className="text-lg font-semibold text-gray-800">{result.storageDuration}</p>
-        </div>
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Clock className="w-3 h-3 text-gray-400" />
+              <p className="text-xs text-gray-500">Duration</p>
+            </div>
+            <p className="text-sm font-semibold text-gray-900">{result.storageDuration}</p>
+          </div>
 
-        <div className={`p-4 rounded-md ${isFree ? 'bg-green-50' : 'bg-blue-50'}`}>
-          <p className="text-sm text-gray-600 mb-1">Storage Charge</p>
-          <p className={`text-2xl font-bold ${isFree ? 'text-green-600' : 'text-blue-600'}`}>
-            {isFree ? 'FREE' : result.storageCharge.displayAmount}
-          </p>
-          {!isFree && (
-            <p className="text-xs text-gray-500 mt-1">
-              Charged at $5.00 per day after 24-hour grace period
+          <div className={`p-3 rounded-lg ${isFree ? 'bg-emerald-50' : 'bg-indigo-50'}`}>
+            <div className="flex items-center gap-1.5 mb-1">
+              <DollarSign className={`w-3 h-3 ${isFree ? 'text-emerald-400' : 'text-indigo-400'}`} />
+              <p className={`text-xs ${isFree ? 'text-emerald-600' : 'text-indigo-600'}`}>Charge</p>
+            </div>
+            <p className={`text-lg font-bold ${isFree ? 'text-emerald-700' : 'text-indigo-700'}`}>
+              {isFree ? 'FREE' : result.storageCharge.displayAmount}
             </p>
-          )}
+          </div>
         </div>
-      </div>
 
-      <div className="flex gap-3">
-        <button
-          onClick={onRetrieveAnother}
-          className="flex-1 py-2 px-4 bg-gray-200 text-gray-700 font-semibold rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-        >
-          Retrieve Another
-        </button>
-        <button
-          onClick={() => window.location.href = '/'}
-          className="flex-1 py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Done
-        </button>
+        {!isFree && (
+          <p className="text-xs text-gray-500 text-center">
+            Charged at $5.00/day after 24-hour grace period
+          </p>
+        )}
+
+        {/* Actions */}
+        <div className="flex gap-3 pt-2">
+          <button onClick={onRetrieveAnother} className="btn-secondary flex-1">
+            Retrieve Another
+          </button>
+          <Link to="/" className="btn-primary flex-1 text-center">
+            Done
+          </Link>
+        </div>
       </div>
     </div>
   );

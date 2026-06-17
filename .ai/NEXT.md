@@ -55,7 +55,8 @@ Store Package → Pickup Code → Retrieve Package (with charges)
 | Sprint 2 — Locker Inventory | 12 | ✅ COMPLETE |
 | Sprint 3 — Package Storage | 13 | ✅ COMPLETE |
 | Sprint 4 — Package Retrieval | 13 | ✅ **COMPLETE** |
-| **Grand Total** | **48** | **100% Core Features** |
+| Sprint 5 — Email & Polish | 5 | ✅ **COMPLETE** |
+| **Grand Total** | **53** | **100% Core + Enhancements** |
 
 ## What's Next?
 
@@ -67,13 +68,21 @@ The core Smart Package Locker system is **complete**:
 - ✅ Full-stack implementation (API + UI)
 - ✅ Security (bcrypt hashing, constant-time verification, generic errors)
 - ✅ Domain model (entities, value objects, state machines)
-- ✅ 79 unit tests passing
+- ✅ 72+ unit tests passing
+- ✅ Email notifications (SMTP integration)
+- ✅ Concurrency protection (DB-level)
+- ✅ Type checking passing
+
+### Completed Enhancements
+- ✅ Email notifications (storage/retrieval confirmations)
+- ✅ Concurrent request handling (partial unique index)
+- ✅ Comprehensive technical documentation
 
 ### Optional Future Enhancements
 - Admin dashboard for analytics
 - Package history/audit trail UI
 - Multi-location support
-- Notification events (email/SMS)
+- SMS notifications
 - Time-limited pickup codes
 
 ## Resume Protocol

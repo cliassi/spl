@@ -20,33 +20,17 @@ export const RetrievePackagePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Smart Package Locker</h1>
-          <p className="text-gray-600 mt-2">Retrieve your package securely</p>
-        </header>
+    <div className="max-w-lg mx-auto">
+      {view === 'form' && (
+        <RetrievePackageForm onSuccess={handleSuccess} />
+      )}
 
-        {view === 'form' && (
-          <RetrievePackageForm onSuccess={handleSuccess} />
-        )}
-
-        {view === 'success' && result && (
-          <RetrievePackageSuccess
-            result={result}
-            onRetrieveAnother={handleRetrieveAnother}
-          />
-        )}
-
-        <div className="mt-8 text-center">
-          <a
-            href="/packages/store"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            Store a Package →
-          </a>
-        </div>
-      </div>
+      {view === 'success' && result && (
+        <RetrievePackageSuccess
+          result={result}
+          onRetrieveAnother={handleRetrieveAnother}
+        />
+      )}
     </div>
   );
 };

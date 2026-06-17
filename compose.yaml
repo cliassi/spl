@@ -29,9 +29,7 @@ services:
     ports:
       - "${API_PORT:-3000}:3000"
     volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/apps/api/node_modules
+      - ./apps/api/src:/app/apps/api/src
     depends_on:
       postgres:
         condition: service_healthy
@@ -48,9 +46,8 @@ services:
     ports:
       - "${WEB_PORT:-5173}:5173"
     volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/apps/web/node_modules
+      - ./apps/web/src:/app/apps/web/src
+      - ./apps/web/index.html:/app/apps/web/index.html
     depends_on:
       - api
     command: pnpm --filter web dev

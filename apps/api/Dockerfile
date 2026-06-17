@@ -7,7 +7,7 @@ RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
 WORKDIR /app
 
 # Copy workspace configuration
-COPY pnpm-workspace.yaml package.json ./
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY tsconfig.json ./
 
 # Development stage
@@ -18,7 +18,7 @@ COPY apps/api/package.json ./apps/api/
 COPY packages/*/package.json ./packages/*/
 
 # Install dependencies
-RUN pnpm install
+RUN pnpm install --frozen-lockfile || pnpm install
 
 # Copy source code (will be overridden by volume mount in dev)
 COPY apps/api ./apps/api

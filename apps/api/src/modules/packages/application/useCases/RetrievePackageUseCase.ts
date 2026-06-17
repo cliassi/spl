@@ -125,7 +125,7 @@ export class RetrievePackageUseCase {
     // Step 7: Persist the retrieved package
     try {
       await this.storageAssignmentRepository.delete(assignment.id);
-      await this.packageRepository.save(retrievedPackage);
+      await this.packageRepository.update(retrievedPackage);
     } catch (error) {
       // Rollback would happen here in a real transaction
       return {
